@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.utils.GamepadTracker;
 import org.firstinspires.ftc.teamcode.utils.PoseStorage;
 
+@Disabled
 @TeleOp(name = "TeleOp", group = "Robot")
 public class BrainSTEMTeleOp extends LinearOpMode {
     BrainSTEMRobot brainSTEMRobot;

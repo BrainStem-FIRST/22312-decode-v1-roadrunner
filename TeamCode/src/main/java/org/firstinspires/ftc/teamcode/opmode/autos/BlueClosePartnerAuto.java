@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.AutoCommands;
 import org.firstinspires.ftc.teamcode.utils.AutoPositions;
 
+@Disabled
 @Autonomous(name="Blue Close Partner Auto", group="Robot")
 public class BlueClosePartnerAuto extends LinearOpMode {
 

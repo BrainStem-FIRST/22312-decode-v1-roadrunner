@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.teamcode.utils.AutoCommands;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.utils.PoseStorage;
 
+
+@Disabled
 @Autonomous(name="Test Auto", group="Robot")
 public class PreBotAuto extends LinearOpMode {
 
