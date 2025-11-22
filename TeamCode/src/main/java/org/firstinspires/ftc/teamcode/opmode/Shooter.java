@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
@@ -14,36 +15,39 @@ public class Shooter {
     // Hardware
     public DcMotorEx shooterMotor;
 
-    /**
-     * Constructor for the Shooter subsystem.
-     * @param hwMap The hardware map from the OpMode.
-     */
+    // Internal State for Toggle
+    private boolean isShooting = false;
+
     public Shooter(HardwareMap hwMap) {
         init(hwMap);
     }
 
-    /**
-     * Initializes all Shooter hardware components.
-     * @param hwMap The hardware map from the OpMode.
-     */
     public void init(HardwareMap hwMap) {
-        // Hardware mapping
         shooterMotor = hwMap.get(DcMotorEx.class, "shooterMotor");
-        // Set motor mode
         shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // FIX: Reversed motor direction based on user feedback
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        stop();
     }
 
-    /**
-     * Runs the shooter motor at its constant power.
-     */
-    public void run() {
-        shooterMotor.setPower(RobotConstants.SHOOTER_POWER);
+    public void toggle() {
+        isShooting = !isShooting;
+
+        if (isShooting) {
+            shooterMotor.setPower(RobotConstants.SHOOTER_POWER);
+        } else {
+            shooterMotor.setPower(0);
+        }
     }
 
-    /**
-     * Stops the shooter motor.
-     */
     public void stop() {
+        isShooting = false;
         shooterMotor.setPower(0);
+    }
+
+    public boolean isShooting() {
+        return isShooting;
     }
 }

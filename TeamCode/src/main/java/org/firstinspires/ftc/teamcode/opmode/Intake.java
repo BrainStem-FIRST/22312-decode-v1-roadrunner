@@ -29,7 +29,7 @@ public class Intake {
      */
     public void init(HardwareMap hwMap) {
         // Hardware mapping
-        collectorMotor = hwMap.get(DcMotorEx.class, "collectorMotor");
+       collectorMotor = hwMap.get(DcMotorEx.class, "collectorMotor");
         // Set motor mode
         collectorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }

@@ -1,179 +1,140 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-// Portions of this file’s structure were refactored with assistance from an LLM under mentor supervision.
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-// Import all of our new subsystems!
-import org.firstinspires.ftc.teamcode.opmode.Drive;
-import org.firstinspires.ftc.teamcode.opmode.Intake;
-import org.firstinspires.ftc.teamcode.opmode.Shooter;
-import org.firstinspires.ftc.teamcode.opmode.Indexer;
-import org.firstinspires.ftc.teamcode.opmode.Transfer;
-// We also need our constants file
-import org.firstinspires.ftc.teamcode.opmode.RobotConstants;
-
-/**
- * This is the main refactored TeleOp file.
- * Its only job is to map gamepad inputs to subsystem "verb" methods.
- * All the complex logic is now inside the subsystem classes.
- */
-@TeleOp(name = "TeleOp (Refactored w/ original shooter logic)")
+@TeleOp(name = "TeleOp (Refactored & Button Corrected)")
 public class BrainSTEMTeleOp extends LinearOpMode {
 
-    // --- Subsystem Declarations ---
+    // Subsystems
     private Drive drive;
     private Intake intake;
     private Shooter shooter;
     private Indexer indexer;
     private Transfer transfer;
-    // private Sensors sensors; // Uncomment when Sensors.java is ready
 
-    // --- State Variables ---
-    // This is the original 'onOff' variable from your first file.
-    private int onOff = 0; // STATE: Tracks the shooter motor toggle (1=on, 2=off, loops to 1).
-
-    // NOTE: The original file used 'gamepad2.rightBumperWasPressed()'.
-    // If this method doesn't exist in your FTC SDK version,
-    // you will need to add "WasPressed" helper variables for the bumpers.
-
+    // --- State Tracking for "WasPressed" Logic ---
+    // We must track the previous state of buttons to detect a "Click" vs a "Hold".
+    private boolean previousAState = false;       // Shooter Toggle
+    private boolean previousRBState = false;      // Indexer Advance (StoS Bias)
+    private boolean previousLBState = false;      // Indexer Reverse (StoS Bias)
+    private boolean previousYState = false;       // Indexer Advance (CtoC Bias)
+    private boolean previousBState = false;       // Indexer Reverse (CtoC Bias)
+    // Note: Transfer (X) logic in original was a "Hold", so we don't need state for X.
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-        // --- Initialization ---
-        // Initialize all subsystems by passing them the hardware map
+        // Initialize Subsystems
         drive = new Drive(hardwareMap);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
         indexer = new Indexer(hardwareMap);
-
         transfer = new Transfer(hardwareMap);
-        // sensors = new Sensors(hardwareMap); // Uncomment when ready
 
         telemetry.addLine("Robot Initialized. Ready for Start!");
         telemetry.update();
 
         waitForStart();
 
-        // --- MAIN TELEOP LOOP ---
         while (opModeIsActive()) {
 
-            // --- SUBSYSTEM: Drive ---
-            // Drive logic is unchanged
-            drive.drive(
-                    gamepad1.left_stick_x,
-                    -gamepad1.left_stick_y, // Y stick is inverted
-                    -gamepad1.right_stick_x
-            );
+            // ============================================================
+            // DRIVER 1 (D1): CHASSIS & INTAKE
+            // ============================================================
 
+            // --- DRIVE (D1) ---
+            drive.drive(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x);
 
-            // --- SUBSYSTEM: Intake ---
-            // This logic is much cleaner now
+            // --- INTAKE (D1 + D2 Assist) ---
+            // D1 Right Trigger OR D2 Right Trigger -> INTAKE
             if (gamepad1.right_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD ||
                     gamepad2.right_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
                 intake.runIntake();
-            } else if (gamepad1.left_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
+            }
+            // D1 Left Trigger -> OUTTAKE
+            else if (gamepad1.left_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
                 intake.runOuttake();
-            } else {
+            }
+            else {
                 intake.stop();
             }
 
 
-            // --- SUBSYSTEM: Shooter ---
-            // This is your original 'onOff' integer logic.
-            // NOTE: This logic is sensitive to how long the 'A' button is held.
-            // If the driver holds it, 'onOff' will count very fast.
-            if (gamepad2.a) {
-                onOff = onOff + 1;
-            }
+            // ============================================================
+            // DRIVER 2 (D2): MANIPULATOR (SHOOTER, INDEXER, TRANSFER)
+            // ============================================================
 
-            // Now, we call the subsystem methods based on the 'onOff' state
-            if (onOff == 1) {
-                shooter.run(); // Tell the shooter subsystem to run
+            // --- SHOOTER (D2 Button A) ---
+            // Logic: Smart Toggle (Click A to On, Click A to Off)
+            boolean currentAState = gamepad2.a;
+            if (currentAState && !previousAState) {
+                shooter.toggle();
             }
-            if (onOff == 2) {
-                shooter.stop(); // Tell the shooter subsystem to stop
-            }
-            if (onOff > 2) {
-                onOff = 1; // Reset the counter
-            }
+            previousAState = currentAState;
 
 
-            // --- SUBSYSTEM: Indexer ---
-            // We just call the "verb" methods
-            if (gamepad2.rightBumperWasPressed()) {
-                if (indexer.currentState == -7 || indexer.currentState == -5 || indexer.currentState == -3 || indexer.currentState == -1 || indexer.currentState == 1 || indexer.currentState == 3 || indexer.currentState == 5 || indexer.currentState == 7) {
-                    indexer.advancecollecttoshoot();
-                }
-                if (indexer.currentState == -8 || indexer.currentState == -6 || indexer.currentState == -4 || indexer.currentState == -2 || indexer.currentState == 0 || indexer.currentState == 2 || indexer.currentState == 4 || indexer.currentState == 6 || indexer.currentState == 8) {
-                    indexer.CtoC_or_StoS_POS();
-                }
-            }
-            if (gamepad2.yWasPressed()) {
-                if (indexer.currentState == -8 || indexer.currentState == -6 || indexer.currentState == -4 || indexer.currentState == -2 || indexer.currentState == 0 || indexer.currentState == 2 || indexer.currentState == 4 || indexer.currentState == 6 || indexer.currentState == 8) {
-                    indexer.advancecollecttoshoot();
-                }
-                if (indexer.currentState == -7 || indexer.currentState == -5 || indexer.currentState == -3 || indexer.currentState == -1 || indexer.currentState == 1 || indexer.currentState == 3 || indexer.currentState == 5 || indexer.currentState == 7) {
-                    indexer.CtoC_or_StoS_POS();
-                }
-            }
-            if (gamepad2.leftBumperWasPressed()) {
-                if (indexer.currentState == -7 || indexer.currentState == -5 || indexer.currentState == -3 || indexer.currentState == -1 || indexer.currentState == 1 || indexer.currentState == 3 || indexer.currentState == 5 || indexer.currentState == 7) {
-                    indexer.deadvanceollecttoshoot();
-                }
-                if (indexer.currentState == -8 || indexer.currentState == -6 || indexer.currentState == -4 || indexer.currentState == -2 || indexer.currentState == 0 || indexer.currentState == 2 || indexer.currentState == 4 || indexer.currentState == 6 || indexer.currentState == 8) {
-                    indexer.CtoC_or_StoS_Neg();
-                }
+            // --- INDEXER (D2 Bumpers, Y, B) ---
+            // We strictly implement "Rising Edge" (WasPressed) logic here so it
+            // only moves ONE step per click, matching original behavior.
 
+            boolean currentRBState = gamepad2.right_bumper;
+            boolean currentLBState = gamepad2.left_bumper;
+            boolean currentYState = gamepad2.y;
+            boolean currentBState = gamepad2.b;
+
+            // 1. Right Bumper (Advance - Shoot Bias)
+            if (currentRBState && !previousRBState) {
+                indexer.handleRightBumper();
             }
-            if (gamepad2.bWasPressed()) {
-                if (indexer.currentState == -8 || indexer.currentState == -6 || indexer.currentState == -4 || indexer.currentState == -2 || indexer.currentState == 0 || indexer.currentState == 2 || indexer.currentState == 4 || indexer.currentState == 6 || indexer.currentState == 8) {
-                    indexer.deadvanceollecttoshoot();
-                }
-                if (indexer.currentState == -7 || indexer.currentState == -5 || indexer.currentState == -3 || indexer.currentState == -1 || indexer.currentState == 1 || indexer.currentState == 3 || indexer.currentState == 5 || indexer.currentState == 7) {
-                    indexer.CtoC_or_StoS_Neg();
-                }
-                if (gamepad2.dpad_right) {
-                    indexer.goToHome(); // Manual override
-                }
+
+            // 2. Y Button (Advance - Collect Bias)
+            if (currentYState && !previousYState) {
+                indexer.handleYButton();
             }
-            // CRITICAL: The Indexer's state machine MUST be updated every loop
+
+            // 3. Left Bumper (Reverse - Shoot Bias)
+            if (currentLBState && !previousLBState) {
+                indexer.handleLeftBumper();
+            }
+
+            // 4. B Button (Reverse - Collect Bias)
+            if (currentBState && !previousBState) {
+                indexer.handleBButton();
+            }
+
+            // Update previous states for next loop
+            previousRBState = currentRBState;
+            previousLBState = currentLBState;
+            previousYState = currentYState;
+            previousBState = currentBState;
+
+
+            // --- INDEXER HOME (D2 D-Pad) ---
+            // Original logic had this nested in B, but D-Pad Right is generally a standalone override.
+            if (gamepad2.dpad_right) {
+                indexer.goToHome();
+            }
+
+            // CRITICAL: Update the Indexer Loop
             indexer.update();
 
 
-            // --- SUBSYSTEM: Transfer ---
-            // This logic now "asks" the indexer if it's safe to fire
+            // --- TRANSFER (D2 Button X) ---
+            // Original logic: Fire while holding X.
             if (gamepad2.x) {
-                // Check the indexer's state before firing!
-                if (indexer.isAtShootPosition()) {
-//                               if (5 > indexer.getIndexerError() && indexer.getIndexerError() < -5) {
-                    if (Math.abs(indexer.getIndexerError()) <= 3) {
-
-
-                        transfer.fire();
-                    }
+                // Safety check: only fire if Indexer is aligned (Even state or 0)
+                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3) {
+                    transfer.fire();
                 }
             } else {
                 transfer.home();
             }
 
-            // --- Telemetry ---
-            telemetry.addData("--- Indexer ---", "");
-            telemetry.addData("Indexer State", indexer.getState());
-            telemetry.addData("Indexer Target", "%.1f", indexer.getTargetPosition());
-            telemetry.addData("Indexer Actual", "%.1f", indexer.getCurrentPosition());
-            telemetry.addData("--- Shooter ---", "");
-            telemetry.addData("Shooter State (onOff)", onOff);
-            telemetry.addData("--- Transfer ---", "");
-            telemetry.addData("Ready to Fire?", indexer.isAtShootPosition());
+
+            // --- TELEMETRY ---
+            telemetry.addData("Indexer State", indexer.currentState);
+            telemetry.addData("Shooter On?", shooter.isShooting());
             telemetry.update();
         }
     }
 }
-
-
-
-
-

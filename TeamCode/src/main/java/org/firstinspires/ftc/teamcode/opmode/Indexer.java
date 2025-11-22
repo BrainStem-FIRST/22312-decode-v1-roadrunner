@@ -7,95 +7,160 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * The Indexer subsystem manages the state machine for holding, rotating,
- * and lining up game pieces for the Transfer/Shooter.
- */
 public class Indexer {
 
-    // Hardware
     public DcMotorEx indexerMotor;
 
-    // State
-    public int currentState = 0; // Replaces 'NumberoftimesYpressed'
+    // State (Public per request)
+    public int currentState = 0;
     public double currentTargetPosition = 0;
 
-    // These variables store the "looping" positions. They get added to on each cycle.
+    // Looping position variables
     private double collectPos1, collectPos2, collectPos3;
     private double shootPos1, shootPos2, shootPos3;
 
+    // Tuning variable
     private double kP = 0.005;
-    /**
-     * Constructor for the Indexer subsystem.
-     * @param hwMap The hardware map from the OpMode.
-     */
+
     public Indexer(HardwareMap hwMap) {
         init(hwMap);
     }
 
-    /**
-     * Initializes all Indexer hardware components and state.
-     * @param hwMap The hardware map from the OpMode.
-     */
     public void init(HardwareMap hwMap) {
-        // Hardware mapping
         indexerMotor = hwMap.get(DcMotorEx.class, "indexerMotor");
 
-        // CRITICAL: Reset encoders to 0 on init
         indexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         indexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         indexerMotor.setPower(0);
 
-        // Initialize our position variables from constants
         resetPositionVariables();
     }
 
     /**
-     * This is the main "loop" method for the Indexer.
-     * It MUST be called every single loop in the TeleOp.
-     * It reads the internal state and tells the motor where to go.
+     * Logic for the Right Bumper.
+     * Original Behavior:
+     * - If in Collect (Odd): Move to Shoot (CtoS) [+1]
+     * - If in Shoot (Even): Move to next Shoot (StoS) [+2]
      */
-    public void update() {
-        // This 'if/else if' block replaces the giant list in the original TeleOp.
-        if (currentState == 1) {
-            currentTargetPosition = collectPos1;
-        } else if (currentState == 2) {
-            currentTargetPosition = shootPos1;
-        } else if (currentState == 3) {
-            currentTargetPosition = collectPos2;
-        } else if (currentState == 4) {
-            currentTargetPosition = shootPos2;
-        } else if (currentState == 5) {
-            currentTargetPosition = collectPos3;
-        } else if (currentState == 6) {
-            currentTargetPosition = shootPos3;
-        } else if (currentState == -1) {
-            currentTargetPosition = collectPos1 + RobotConstants.INDEXER_STATE_NEG_1_OFFSET;
-        } else if (currentState == -2) {
-            currentTargetPosition = shootPos1 + RobotConstants.INDEXER_STATE_NEG_2_OFFSET;
-        } else if (currentState == -3) {
-            currentTargetPosition = collectPos2 + RobotConstants.INDEXER_STATE_NEG_3_OFFSET;
-        } else if (currentState == -4) {
-            currentTargetPosition = shootPos2 + RobotConstants.INDEXER_STATE_NEG_4_OFFSET;
-        } else if (currentState == -5) {
-            currentTargetPosition = collectPos3 + RobotConstants.INDEXER_STATE_NEG_5_OFFSET;
-        } else if (currentState == -6) {
-            currentTargetPosition = shootPos3 + RobotConstants.INDEXER_STATE_NEG_6_OFFSET;
-        } else if (currentState == -7) {
-            currentState = -1;
-        } else if (currentState == -8) {
-            currentState = -2;
-        } else if (currentState == 7) {
-            currentState = 1;
-        } else if (currentState == 8) {
-            currentState = 2;
+    public void handleRightBumper() {
+        if (isOddState()) {
+            CtoS_or_StoC_Advance(); // CtoS (+1)
+        } else {
+            CtoC_or_StoS_Advance(); // StoS (+2)
         }
+    }
 
-        // Only command the motor if we are in an active state (not 0)
+    /**
+     * Logic for the Y Button.
+     * Original Behavior:
+     * - If in Collect (Odd): Move to next Collect (CtoC) [+2]
+     * - If in Shoot (Even): Move to Collect (StoC) [+1]
+     */
+    public void handleYButton() {
+        if (isOddState()) {
+            CtoC_or_StoS_Advance(); // CtoC (+2)
+        } else {
+            CtoS_or_StoC_Advance(); // StoC (+1)
+        }
+    }
+
+    /**
+     * Logic for Left Bumper (Reverse RB logic).
+     */
+    public void handleLeftBumper() {
+        if (isOddState()) {
+            CtoS_or_StoC_Reverse();
+        } else {
+            CtoC_or_StoS_Reverse();
+        }
+    }
+
+    /**
+     * Logic for B Button (Reverse Y logic).
+     */
+    public void handleBButton() {
+        if (isOddState()) {
+            CtoC_or_StoS_Reverse();
+        } else {
+            CtoS_or_StoC_Reverse();
+        }
+    }
+
+    // --- Internal Nomenclature Methods ---
+
+    // CtoS (Collect to Shoot) or StoC (Shoot to Collect) -> Moves 1 Step
+    private void CtoS_or_StoC_Advance() {
+        currentState = currentState + 1;
+        if (currentState > 6) {
+            currentState = 1;
+            incrementAllPositions(RobotConstants.INDEXER_TICKS_PER_CYCLE);
+        }
+    }
+
+    private void CtoS_or_StoC_Reverse() {
+        currentState = currentState - 1;
+        if (currentState < -6) {
+            currentState = -1;
+            incrementAllPositions(-RobotConstants.INDEXER_TICKS_PER_CYCLE);
+        }
+    }
+
+    // CtoC (Collect to Collect) or StoS (Shoot to Shoot) -> Moves 2 Steps
+    private void CtoC_or_StoS_Advance() {
+        currentState = currentState + 2;
+        if (currentState > 6) {
+            // Logic: If we were even, reset to 2. If odd, reset to 1.
+            if (isEvenState(currentState)) currentState = 2;
+            else currentState = 1;
+
+            incrementAllPositions(RobotConstants.INDEXER_TICKS_PER_CYCLE);
+        }
+    }
+
+    private void CtoC_or_StoS_Reverse() {
+        currentState = currentState - 2;
+        if (currentState < -6) {
+            if (isEvenState(currentState)) currentState = -2;
+            else currentState = -1;
+
+            incrementAllPositions(-RobotConstants.INDEXER_TICKS_PER_CYCLE);
+        }
+    }
+
+    private void incrementAllPositions(double amount) {
+        collectPos1 += amount;
+        collectPos2 += amount;
+        collectPos3 += amount;
+        shootPos1 += amount;
+        shootPos2 += amount;
+        shootPos3 += amount;
+    }
+
+    public void update() {
+        // Map State to Target
+        if (currentState == 1) currentTargetPosition = collectPos1;
+        else if (currentState == 2) currentTargetPosition = shootPos1;
+        else if (currentState == 3) currentTargetPosition = collectPos2;
+        else if (currentState == 4) currentTargetPosition = shootPos2;
+        else if (currentState == 5) currentTargetPosition = collectPos3;
+        else if (currentState == 6) currentTargetPosition = shootPos3;
+
+            // Negative / Backup States
+        else if (currentState == -1) currentTargetPosition = collectPos1 + RobotConstants.INDEXER_BACKUP_OFFSET_1;
+        else if (currentState == -2) currentTargetPosition = shootPos1 + RobotConstants.INDEXER_BACKUP_OFFSET_2;
+        else if (currentState == -3) currentTargetPosition = collectPos2 + RobotConstants.INDEXER_BACKUP_OFFSET_3;
+        else if (currentState == -4) currentTargetPosition = shootPos2 + RobotConstants.INDEXER_BACKUP_OFFSET_4;
+        else if (currentState == -5) currentTargetPosition = collectPos3 + RobotConstants.INDEXER_BACKUP_OFFSET_5;
+        else if (currentState == -6) currentTargetPosition = shootPos3 + RobotConstants.INDEXER_BACKUP_OFFSET_6;
+
+            // Loop Transitions
+        else if (currentState == -7) currentState = -1;
+        else if (currentState == -8) currentState = -2;
+        else if (currentState == 7) currentState = 1;
+        else if (currentState == 8) currentState = 2;
+
+        // Motor Power
         if (currentState != 0) {
-//            indexerMotor.setTargetPosition((int) currentTargetPosition);
-//            indexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            indexerMotor.setPower(RobotConstants.INDEXER_POWER);
             double error = currentTargetPosition - indexerMotor.getCurrentPosition();
             double power = kP * error;
             power = Range.clip(power, -1, 1);
@@ -103,119 +168,32 @@ public class Indexer {
         }
     }
 
-    /**
-     * Advances the indexer state to the next position.
-     */
-    public void advancecollecttoshoot() {
-        currentState = currentState + 1;
-        if (currentState > 6) {
-            currentState = 1; // Loop back to state 1
-            // Add the cycle distance to all positions for the next loop
-            collectPos1 =  collectPos1 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos2 = collectPos2 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos3 = collectPos3 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos1 = shootPos1 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos2 = shootPos2 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos3 = shootPos3 + RobotConstants.INDEXER_CYCLE_POSITIONS;
-        }
-    }
-    public void deadvanceollecttoshoot() {
-        currentState = currentState - 1;
-        if (currentState < -6) {
-            currentState = -1; // Loop back to state 1
-            // Add the cycle distance to all positions for the next loop
-            collectPos1 = collectPos1 - RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos2 = collectPos2 - RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos3 = collectPos3 - RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos1 = shootPos1 -RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos2 = shootPos2 - RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos3 = shootPos3 -RobotConstants.INDEXER_CYCLE_POSITIONS;
-        }
-    }
-    public void CtoC_or_StoS_POS () {
-        currentState = currentState + 2;
-        if (currentState > 6) {
-            if (currentState == -8 || currentState == -6 || currentState == -4 || currentState == -2 || currentState == 0 || currentState == 2 || currentState == 4 || currentState == 6) {
-                currentState = 2;
-            }
-            if (currentState == -7 || currentState == -5 || currentState == -3 || currentState == -1 || currentState == 1 || currentState == 3 || currentState == 5 || currentState == 7) {
-                currentState = 1;
-            }
-
-            // Add the cycle distance to all positions for the next loop
-            collectPos1 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos2 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos3 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos1 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos2 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos3 += RobotConstants.INDEXER_CYCLE_POSITIONS;
-        }
-    }
-    public void CtoC_or_StoS_Neg () {
-        currentState = currentState - 2;
-        if (currentState < -6) {
-            if (currentState == -8 || currentState == -6 || currentState == -4 || currentState == -2 || currentState == 0 || currentState == 2 || currentState == 4 || currentState == 6) {
-                currentState = -2;
-            }
-            if (currentState == -7 || currentState == -5 || currentState == -3 || currentState == -1 || currentState == 1 || currentState == 3 || currentState == 5 || currentState == 7) {
-                currentState = -1;
-            }
-
-            // Add the cycle distance to all positions for the next loop
-            collectPos1 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos2 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-            collectPos3 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos1 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos2 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-            shootPos3 -= RobotConstants.INDEXER_CYCLE_POSITIONS;
-        }
-    }
-
-    /**
-     * Reverses the indexer state to the previous position.
-     */
-    public void reverse() {
-        currentState--;
-        if (currentState < -6) { // Original logic was '== -7'
-            if (currentState == -7) {
-                currentState = -1; // Loop back to state -1
-            }
-        }
-        if (currentState < -6) {
-            currentState = -2; // Loop back to state -2
-        }
-    }
-
-    /**
-     * Manual override to send the indexer to its home position.
-     * This also resets the main state.
-     */
     public void goToHome() {
-        currentState = 0; // Set state to idle
-        resetPositionVariables(); // Reset the cycle counts
-
-        // Command the motor to the home position
+        currentState = 0;
+        resetPositionVariables();
         indexerMotor.setTargetPosition((int) RobotConstants.INDEXER_HOME_POS);
         indexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         indexerMotor.setPower(RobotConstants.INDEXER_POWER);
     }
 
-    /**
-     * Checks if the indexer is currently at a "shoot" position.
-     * @return true if the indexer is ready to be fired.
-     */
-    public boolean isAtShootPosition() {
-        // We also include 0 from the original file, which is our 'home' state.
-        // This implies you can fire from the home position.
-        // Let's match the original file:
-        // (NumberoftimesYpressed == 2 || NumberoftimesYpressed == 4 || NumberoftimesYpressed == 6 || NumberoftimesYpressed == 0 || NumberoftimesYpressed == -2|| NumberoftimesYpressed == -4|| NumberoftimesYpressed == -6)
-        return currentState == 0 || currentState == 2 || currentState == 4 || currentState == 6 ||
-                currentState == -2 || currentState == -4 || currentState == -6;
+    // Helpers
+    private boolean isOddState() {
+        // -7, -5... 1, 3, 5, 7
+        return Math.abs(currentState) % 2 == 1;
     }
 
-    /**
-     * Resets all looping position variables back to their base constants.
-     */
+    private boolean isEvenState(int state) {
+        return Math.abs(state) % 2 == 0;
+    }
+
+    public boolean isAtShootPosition() {
+        return currentState == 0 || isEvenState(currentState);
+    }
+
+    public double getIndexerError() {
+        return indexerMotor.getCurrentPosition() - currentTargetPosition;
+    }
+
     private void resetPositionVariables() {
         collectPos1 = RobotConstants.INDEXER_STATE_1_POS;
         collectPos2 = RobotConstants.INDEXER_STATE_3_POS;
@@ -224,13 +202,4 @@ public class Indexer {
         shootPos2 = RobotConstants.INDEXER_STATE_4_POS;
         shootPos3 = RobotConstants.INDEXER_STATE_6_POS;
     }
-
-
-    // --- Telemetry Methods ---
-    public int getState() { return currentState; }
-    public double getIndexerError() {
-        return indexerMotor.getCurrentPosition() - currentTargetPosition;
-    }
-    public double getTargetPosition() { return currentTargetPosition; }
-    public double getCurrentPosition() { return indexerMotor.getCurrentPosition(); }
 }
