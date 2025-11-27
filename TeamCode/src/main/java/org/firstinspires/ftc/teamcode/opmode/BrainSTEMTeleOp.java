@@ -49,6 +49,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             double strafe  = gamepad1.left_stick_x;
             double turn    = -gamepad1.right_stick_x;
 
+
             // Vision Override
             if (gamepad1.left_bumper) {
                 if (vision.hasTarget()) {
@@ -72,6 +73,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             else {
                 intake.stop();
             }
+
 
             // ============================================================
             // DRIVER 2 (D2): MANIPULATOR
@@ -104,43 +106,16 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
             indexer.update();
 
-            if (gamepad2.x) {
-                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
-                    transfer.fire();
-                }
+
+            boolean indexerReady = indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3;
+            boolean shooterReady=Math.abs(shooter.error) <= 50;
+            boolean userOverride = gamepad2.dpad_right || gamepad2.x;
+            if (indexerReady && shooterReady && gamepad2.x || gamepad2.dpad_right) {
+                transfer.fire();
             } else {
                 transfer.home();
             }
-            if (gamepad2.dpad_left){
-                indexer.handleLeftBumper();
-                sleep(200);
-                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50){
-                    transfer.fire();
-                    break;
-                }
-                sleep(200);
-                transfer.home();
-                sleep(200);
-                indexer.handleRightBumper();
-                sleep(200);
-                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
-                    transfer.fire();
-                    break;
-                }
-                sleep(200);
-                transfer.home();
-                sleep(200);
-                indexer.handleRightBumper();
-                sleep(200);
-                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
-                    transfer.fire();
-                    break;
-                }
-                sleep(200);
-                transfer.home();
-                sleep(200);
 
-            }
 
             // --- TELEMETRY ---
             // Display the Limelight Debug Info (Sister Team Style)

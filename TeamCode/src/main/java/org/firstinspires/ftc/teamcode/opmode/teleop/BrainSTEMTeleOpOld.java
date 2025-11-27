@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.utils.PoseStorage;
 
 @Disabled
 @TeleOp(name = "TeleOp", group = "Robot")
-public class BrainSTEMTeleOp extends LinearOpMode {
+public class BrainSTEMTeleOpOld extends LinearOpMode {
     BrainSTEMRobot brainSTEMRobot;
 
     // COMMANDS //
