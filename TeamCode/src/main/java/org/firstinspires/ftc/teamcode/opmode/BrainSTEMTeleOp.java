@@ -19,6 +19,9 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private boolean previousYState = false;
     private boolean previousBState = false;
 
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new Drive(hardwareMap);
@@ -63,7 +66,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                     gamepad2.right_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
                 intake.runIntake();
             }
-            else if (gamepad1.left_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
+            else if (gamepad1.left_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD || gamepad2.left_trigger > RobotConstants.INTAKE_TRIGGER_THRESHOLD) {
                 intake.runOuttake();
             }
             else {
@@ -98,15 +101,45 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             previousYState = currentYState;
             previousBState = currentBState;
 
-            if (gamepad2.dpad_right) indexer.goToHome();
+
             indexer.update();
 
             if (gamepad2.x) {
-                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3) {
+                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
                     transfer.fire();
                 }
             } else {
                 transfer.home();
+            }
+            if (gamepad2.dpad_left){
+                indexer.handleLeftBumper();
+                sleep(200);
+                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50){
+                    transfer.fire();
+                    break;
+                }
+                sleep(200);
+                transfer.home();
+                sleep(200);
+                indexer.handleRightBumper();
+                sleep(200);
+                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
+                    transfer.fire();
+                    break;
+                }
+                sleep(200);
+                transfer.home();
+                sleep(200);
+                indexer.handleRightBumper();
+                sleep(200);
+                if (indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3 && Math.abs(shooter.error) <= 50) {
+                    transfer.fire();
+                    break;
+                }
+                sleep(200);
+                transfer.home();
+                sleep(200);
+
             }
 
             // --- TELEMETRY ---
@@ -119,6 +152,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             } else {
                 telemetry.addData("Shooter", "OFF");
             }
+            telemetry.addData("shooter rpm error", shooter.error);
             telemetry.update();
         }
 

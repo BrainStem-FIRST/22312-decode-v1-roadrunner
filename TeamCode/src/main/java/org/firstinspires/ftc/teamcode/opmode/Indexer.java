@@ -89,7 +89,7 @@ public class Indexer {
     // --- Internal Nomenclature Methods ---
 
     // CtoS (Collect to Shoot) or StoC (Shoot to Collect) -> Moves 1 Step
-    private void CtoS_or_StoC_Advance() {
+    public void CtoS_or_StoC_Advance() {
         currentState = currentState + 1;
         if (currentState > 6) {
             currentState = 1;
@@ -97,7 +97,7 @@ public class Indexer {
         }
     }
 
-    private void CtoS_or_StoC_Reverse() {
+    public void CtoS_or_StoC_Reverse() {
         currentState = currentState - 1;
         if (currentState < -6) {
             currentState = -1;
@@ -106,7 +106,7 @@ public class Indexer {
     }
 
     // CtoC (Collect to Collect) or StoS (Shoot to Shoot) -> Moves 2 Steps
-    private void CtoC_or_StoS_Advance() {
+    public void CtoC_or_StoS_Advance() {
         currentState = currentState + 2;
         if (currentState > 6) {
             // Logic: If we were even, reset to 2. If odd, reset to 1.
@@ -117,7 +117,7 @@ public class Indexer {
         }
     }
 
-    private void CtoC_or_StoS_Reverse() {
+    public void CtoC_or_StoS_Reverse() {
         currentState = currentState - 2;
         if (currentState < -6) {
             if (isEvenState(currentState)) currentState = -2;
@@ -127,7 +127,7 @@ public class Indexer {
         }
     }
 
-    private void incrementAllPositions(double amount) {
+    public void incrementAllPositions(double amount) {
         collectPos1 += amount;
         collectPos2 += amount;
         collectPos3 += amount;

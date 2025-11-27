@@ -12,6 +12,7 @@ public class Shooter {
 
     // Hardware
     public DcMotorEx shooterMotor;
+    public double error;
 
     // Internal State
     private boolean isShooting = false;
@@ -93,9 +94,10 @@ public class Shooter {
         if (!isShooting) return false;
 
         double currentRPM = getCurrentRPM();
-        double error = Math.abs(currentTargetRPM - currentRPM);
+        error = Math.abs(currentTargetRPM - currentRPM);
         double tolerance = currentTargetRPM * RobotConstants.SHOOTER_TOLERANCE_PERCENT;
         return error < tolerance;
+
     }
 
     public double getCurrentRPM() {
