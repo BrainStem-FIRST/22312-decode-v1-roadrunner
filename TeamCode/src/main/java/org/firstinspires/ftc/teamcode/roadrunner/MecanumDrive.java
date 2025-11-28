@@ -70,23 +70,23 @@ public class MecanumDrive {
         public double trackWidthTicks = 6335.819830836217;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.00008;
-        public double kV = 0.00537260977380928;
-        public double kA = 0.00025679507657330324;
+        public double kS = 0.000001;//done//
+        public double kV = 0.00026;//done//
+        public double kA = 0.000125;//done//
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 100;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 75;
+        public double maxWheelVel = 30;//done//
+        public double minProfileAccel = 20;//done//
+        public double maxProfileAccel = -20;//done//
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 3;
-        public double lateralGain = 3;
-        public double headingGain = 1.7;
+        public double axialGain = 10;
+        public double lateralGain = 7.5;
+        public double headingGain = 6.75;
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -227,10 +227,10 @@ public class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontDrive");
+        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeftMotor");
         leftBack = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
         rightBack = hardwareMap.get(DcMotorEx.class, "backRightMotor");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontDrive");
+        rightFront = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
