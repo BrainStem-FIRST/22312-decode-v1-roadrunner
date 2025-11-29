@@ -1,6 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -18,6 +24,7 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Indexer;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.opmode.Sensors;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.BrainSTEMRobot;
 import org.firstinspires.ftc.teamcode.utils.PIDController;
 import org.firstinspires.ftc.teamcode.utils.pidDrive.DriveParams;
@@ -27,7 +34,7 @@ import org.firstinspires.ftc.teamcode.utils.pidDrive.Waypoint;
 
 @Autonomous(name = "Basic Autonomous")
 public class AutoBasic extends LinearOpMode {
-ServoImplEx lifter;
+    ServoImplEx lifter;
 
     Drive drive;
     Shooter shooter;
@@ -38,158 +45,99 @@ ServoImplEx lifter;
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new Drive(hardwareMap);
-        pinpoint = new PinpointLocalizer(hardwareMap, new Pose2d(0, 0, 0), telemetry);
-        shooter = new Shooter(hardwareMap);
-        transfer = new Transfer(hardwareMap);
+//        pinpoint = new PinpointLocalizer(hardwareMap, new Pose2d(0, 0, 0), telemetry);
+//        shooter = new Shooter(hardwareMap);
+//        transfer = new Transfer(hardwareMap);
 
-        indexerMotor = hardwareMap.get(DcMotorEx.class, "indexerMotor");
+//        indexerMotor = hardwareMap.get(DcMotorEx.class, "indexerMotor");
         telemetry.addData(String.valueOf(indexerMotor), "indexerMotor");
 
-        indexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        indexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        indexerMotor.setPower(0);
+//        indexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        indexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        indexerMotor.setPower(0);
 
-        telemetry.addLine("Initialization Complete. Ready to start.");
-        telemetry.update();
+//x is 34.8634 y is 61.6041 heading is 270//
+        //x us 45.5 and y is 64.5 heading is 44
+        // 1. Define the Initial Pose
+        // Heading of 270 degrees means: +X is Forward, -Y is Right
+        Pose2d initialPose = new Pose2d(-55.5, 44.5, Math.toRadians(135));
+        Pose2d pose2 = new Pose2d(-24, 24, Math.toRadians(135));
+        Pose2d pose3 = new Pose2d(-13.7, 22.4, Math.toRadians(90));
+      //  Pose2d pose4 = new Pose2d(-12.3, 23.6, 90);
+       // Pose2d pose3 = new Pose2d(36, -12, Math.toRadians(150));
+        //Pose2d pose4 = new Pose2d(36,-12.1,Math.toRadians(102.5));
+       // Pose2d
+        //Pose2d pose4 = new Pose2d(36, -12, Math.toRadians(90));
+
+
+
+        // --- NOTE: InitialPose2 is not needed and has been removed ---
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+
+        // --- PROBLEM: The old traj1, traj2, traj3 definitions are deleted ---
+        // We now define ONE chained action instead:
+            Action action1 = drive.actionBuilder(initialPose)
+
+                // 1. FIRST MOVEMENT: Go Forward 48 inches
+                // We add 48 inches to the starting X-coordinate (34.8634 + 48)
+                .splineToLinearHeading(pose2, Math.toRadians(0))
+
+
+
+                    //.splineToLinearHeading(pose4, Math.toRadians(0))
+                .build();
+        //Action action2 = drive.actionBuilder(pose3)
+               // .splineToLinearHeading(pose4,Math.toRadians(0))
+
+                        //.build();
+        //Action action3 = drive.actionBuilder(pose5)
+        Action action2 = drive.actionBuilder(pose2)
+                .splineToLinearHeading(pose3, Math.toRadians(0))
+
+                        .build();
+        //Action action3 = drive.actionBuilder(pose3)
+               // .splineToLinearHeading(pose4, Math.toRadians(0))
+
+              //  .build();
+
+
+
 
 
 
 
         waitForStart();
 
-        transfer.lifter.setPwmRange(new PwmControl.PwmRange(
+        Actions.runBlocking(
+                new SequentialAction(
+                        action1
 
-                RobotConstants.TRANSFER_LIFTER_DOWN_POS,   // This will be position 0.0
-                RobotConstants.TRANSFER_LIFTER_RAISED_POS
-        ));
-
-        boolean finishedindexing = false;
-        boolean finishedindexing_2 = false;
-        boolean finishedindexing_3 = false;
-        boolean reachedDestination = false;
-        double targetX = -57.5;
-        PIDController xPid = new PIDController(0.1, 0, 0);
-        xPid.setTarget(targetX);
-
-        while (reachedDestination == false) {
-
-            pinpoint.update();
-
-            double xPower = xPid.update(pinpoint.pose().position.x);
-            if (xPower < -0.6) {
-                xPower = -0.6;
-            }
-            if (xPower > 0.6) {
-                xPower = 0.6;
-            }
-            drive.drive(0, xPower, 0);
-
-            double xError = Math.abs(targetX - pinpoint.pose().position.x);
-
-            if (xError < 2) {
-                reachedDestination = true;
-                drive.drive(0, 0, 0);
-            }
-
-            telemetry.addData("x", pinpoint.pose().position.x);
-            telemetry.addData("y", pinpoint.pose().position.y);
-            telemetry.addData("xError", Math.abs(targetX - pinpoint.pose().position.x));
-            telemetry.update();
-        }
-        shooter.shooterMotor.setPower(0.9);
-sleep(2200);
-        while (false == finishedindexing) {
-
-            double error = 49 - indexerMotor.getCurrentPosition();
-            double power = 0.05 * error;
-            power = Range.clip(power, -0.3, 0.3);
-            indexerMotor.setPower(power);
-            if (power < 0.1){
-                if (power > 0){
-                    power = 0.1;
-                }
-
-            }
-            if (Math.abs(error) <= 1) {
-                finishedindexing = true;
-                indexerMotor.setPower(0);
-
-
-
-
-
-            }
-            telemetry.addData("indexer motor position", indexerMotor.getCurrentPosition());
-            telemetry.update();
-
-        }
-        shooter.shooterMotor.setPower(0.88);
-        sleep(1500);
-        transfer.lifter.setPosition(0.99);
-        sleep(1500);
-        transfer.lifter.setPosition(0);
+                )
+        );
         sleep(1000);
+        Actions.runBlocking(
+                new SequentialAction(
+                        action2
 
 
-
-
-        while (false == finishedindexing_2) {
-            double error = 145 - indexerMotor.getCurrentPosition();
-            double power = 0.07 * error;
-            power = Range.clip(power, -0.3, 0.3);
-            indexerMotor.setPower(power);
-            if (power < 0.1){
-                if (power > 0){
-                    power = 0.1;
-                }
-                if (Math.abs(error) <= 1) {
-                    finishedindexing_2 = true;
-                    indexerMotor.setPower(0);
-
-                }
-
-            }
-
-            telemetry.addData("indexer motor position2", indexerMotor.getCurrentPosition());
-            telemetry.addData("is it done indexing the 2nd one?", finishedindexing_2);
-            telemetry.update();
-
-        }
-
+                )
+        );
         sleep(1000);
-        transfer.lifter.setPosition(0.99);
-        sleep(1500);
-        transfer.lifter.setPosition(0);
-        sleep(1000);
-
-        while (false == finishedindexing_3) {
-
-            double error = 238 - indexerMotor.getCurrentPosition();
-            double power = 0.07 * error;
-            power = Range.clip(power, -0.3, 0.3);
-            indexerMotor.setPower(power);
-            if (power < 0.1) {
-                if (power > 0) {
-                    power = 0.1;
-                }
-
-            }
-            if (Math.abs(error) <= 1) {
-                finishedindexing_3 = true;
-                indexerMotor.setPower(0);
-
-            }
-        }
-            sleep(1000);
-            transfer.lifter.setPosition(0.99);
-            sleep(1500);
-            transfer.lifter.setPosition(0);
-            sleep(1000);
+        //Actions.runBlocking(
+                //new SequentialAction(
+                //        action3
 
 
 
-            telemetry.addData("indexer motor position3", indexerMotor.getCurrentPosition());
-            telemetry.update();
+             //   )
+      //  );
+
+        // 4. EXECUTE THE SINGLE, FIXED ACTION
+
+
+
 
     }
+
 }
