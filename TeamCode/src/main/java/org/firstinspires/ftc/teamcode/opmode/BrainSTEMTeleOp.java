@@ -123,6 +123,13 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             boolean currentYState = gamepad2.y;
             boolean currentBState = gamepad2.b;
 
+//            if (gamepad2.x && shooter.error <= 50 && indexer.isAtShootPosition() && indexer.getIndexerError() < 3) {
+//            transfer.fire();
+//
+//            } else {
+//                transfer.home();
+//            }
+
             if (currentRBState && !previousRBState) indexer.handleRightBumper();
             if (currentYState && !previousYState)   indexer.handleYButton();
             if (currentLBState && !previousLBState) indexer.handleLeftBumper();
@@ -146,20 +153,38 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             indexer.update();
 
             // --- MANUAL FIRE LOGIC ---
-            // Check if robot is physically ready to fire
-            boolean indexerReady = indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) <= 3;
-            boolean shooterReady = Math.abs(shooter.error) <= 50;
 
-            // LOGIC CHECK: Is the Auto Sequence currently running?
-            if (!rapidFire.isRunning()) {
-                // If Auto is NOT running, Driver 2 has manual control of the servo.
-                if (indexerReady && shooterReady && (gamepad2.x || gamepad2.dpad_right)) {
+            // 1. Calculate Live Interlocks (Do not trust stale public variables)
+            // We calculate the error right here, right now, to ensure safety.
+            double currentShooterError = Math.abs(shooter.getTargetRPM() - shooter.getCurrentRPM());
+            double currentIndexerError = Math.abs(indexer.getIndexerError());
+
+            // 2. Define "Ready" Conditions
+            // Shooter: Must be spinning (isShooting) AND within 50 RPM of target
+            boolean isShooterReady = shooter.isShooting() && (currentShooterError <= 50);
+
+            // Indexer: Must be in a "Shoot" (Even) position AND physically aligned
+            // Note: I widened the tolerance to 10 ticks (was 3) to make the button more responsive.
+            boolean isIndexerReady = indexer.isAtShootPosition() && (currentIndexerError <= 10);
+
+            // 3. Logic Gate
+            // IF Rapid Fire is running -> Automation controls the servo (Ignore Manual)
+            // IF Rapid Fire is NOT running -> Driver 2 controls the servo (Manual)
+            if (rapidFire.isRunning()) {
+                // AUTOMATION CONTROL:
+                // We do nothing here. 'rapidFire.update()' (called earlier) handles the servo.
+                // Do NOT call transfer.home() here, or you will fight the automation.
+            }
+            else {
+                // MANUAL CONTROL:
+                // Only fire if Safety Interlocks pass AND Button is pressed
+                if (gamepad2.x && isShooterReady && isIndexerReady) {
                     transfer.fire();
                 } else {
+                    // If not firing manually, keep the transfer retracted
                     transfer.home();
                 }
             }
-            // If Auto IS running, we ignore Driver 2's X button so the servo doesn't stutter.
 
             // --- TELEMETRY ---
             vision.printInfo(telemetry);
