@@ -15,23 +15,31 @@ public class RobotConstants {
     public static double SHOOTER_KP = 50.0;
     public static double SHOOTER_KI = 0.0;
     public static double SHOOTER_KD = 0.0;
-    public static double SHOOTER_RPM_FAR = 4300.0;
+    public static double SHOOTER_RPM_FAR = 4250.0;
     public static double SHOOTER_RPM_NEAR = 3300.0;
 
     // --- Transfer ---
     public static int TRANSFER_LIFTER_DOWN_POS = 2284;
     public static int TRANSFER_LIFTER_RAISED_POS = 1587;
 
-    // --- Vision (Updated) ---
+    // --- AUTO FIRE TIMING ---
+    public static long AF_INDEXER_SETTLE_MS = 130;
+    public static long AF_TRANSFER_UP_MS = 130;
+    public static long AF_TRANSFER_DOWN_MS = 130;
+
+    // --- Vision & Aiming ---
     public static double VISION_TURN_KP = 0.03;
     public static double VISION_MAX_TURN_SPEED = 0.5;
     public static double VISION_TOLERANCE_DEGREES = 1.0;
 
-    // AIMING OFFSET (Degrees)
-    // 0.0 = Aim straight at the tag.
-    // +5.0 = Aim 5 degrees to the RIGHT of the tag.
-    // -5.0 = Aim 5 degrees to the LEFT of the tag.
+    // GLOBAL OFFSET (Used by the code)
     public static double VISION_AIM_OFFSET = 0.0;
+
+    // ALLIANCE SPECIFIC OFFSETS (Tune these!)
+    // If Red shoots too far left, change this number.
+    public static double VISION_OFFSET_RED = -2.0;
+    // If Blue shoots too far right, change this number.
+    public static double VISION_OFFSET_BLUE = 2.0;
 
     // --- Indexer ---
     public static double INDEXER_POWER = 0.5;

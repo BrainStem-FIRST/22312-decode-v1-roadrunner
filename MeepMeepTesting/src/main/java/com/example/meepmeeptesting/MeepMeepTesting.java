@@ -12,7 +12,7 @@ public class MeepMeepTesting {
         MeepMeep meepMeep = new MeepMeep(700);
 
         /// red far solo auto
-        RoadRunnerBotEntity redFarSolo = new DefaultBotBuilder(meepMeep)
+        RoadRunnerBotEntity blueFarPartner = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
@@ -34,11 +34,17 @@ public class MeepMeepTesting {
 //                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
 //                .build());
 
-        redFarSolo.runAction(redFarSolo.getDrive().actionBuilder(new Pose2d(-55.5, 44.5, Math.toRadians(135)))
+        blueFarPartner.runAction(blueFarPartner.getDrive().actionBuilder(new Pose2d(-55.5, -44.5, Math.toRadians(-135)))
                 .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-24, 24, Math.toRadians(135)), Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(-13.7, 22.4, Math.toRadians(90)), Math.toRadians(0))
+                // You are already at this start pose, so you usually don't need to spline to it again immediately unless correcting:
+                // .splineToLinearHeading(new Pose2d(-55.5, -44.5, Math.toRadians(-135)), Math.toRadians(0))
 
+                // Corrected lines: Added closing parenthesis for Pose2d, added tangent, added closing parenthesis for function
+                .splineToLinearHeading(new Pose2d(-9.5, -22.4, Math.toRadians(-80)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-9.5, -33.5, Math.toRadians(-80)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-9.5, -37.5, Math.toRadians(-87.5)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-9.5, -43.5, Math.toRadians(-90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-24.1, -24, Math.toRadians(-142)), Math.toRadians(0))
                 .build());
 
         /// Red far side partner
@@ -108,8 +114,9 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(0.95f)
 //                .addEntity(redFarSolo)
 //                .addEntity(redCloseSolo)
-                .addEntity(redFarPartner)
+//                .addEntity(redFarPartner)
 //                .addEntity(redClosePartner)
+                  .addEntity(blueFarPartner)
 //
                 .start();
     }
