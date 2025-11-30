@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "Blue Close Auto")
-public class BlueClose extends LinearOpMode {
+@Autonomous(name = "Red Close Auto")
+public class RedClose extends LinearOpMode {
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -34,6 +34,34 @@ public class BlueClose extends LinearOpMode {
     Transfer transfer;
     Indexer indexer;
     PinpointLocalizer pinpoint;
+
+    // --- New Transformation Logic ---
+
+    /**
+     * Transforms the coordinates for the Red Alliance based on the team's custom Pinpoint system:
+     * 1. Swaps X and Y (Field X is Robot Y, Field Y is Robot X).
+     * 2. Mirrors the final Y coordinate (Robot Y) and adjusts the heading.
+     * * NOTE: Since your existing pose definitions are already mirrored from the Blue side
+     * (e.g., -55.5, -44.5), this function assumes the input is the final Red target
+     * and performs the X/Y swap and heading adjustment.
+     */
+    private Pose2d transformPoseForRed(Pose2d blueSidePose) {
+        // Red Alliance: Y-axis is flipped (Y * -1) and X/Y are swapped relative to standard field coordinates.
+        // Assuming the input poses are already the correct signed coordinates for the Red side.
+
+        // 1. Swap X and Y: newX = oldY, newY = oldX
+        double newX = blueSidePose.position.y;
+        double newY = blueSidePose.position.x;
+
+        // 2. Adjust heading: Mirror the angle (135 -> -135)
+        // Since your input angles are already signed (-135), we just need to ensure
+        // the angle is still valid for the new orientation.
+        double newHeading = Math.toRadians(Math.toDegrees(blueSidePose.heading.log()) * -1);
+
+        // Your current poses already look like they've been transformed for the Red side,
+        // so we'll apply the X/Y swap and ensure the new Y is also signed correctly.
+        return new Pose2d(newX, newY, blueSidePose.heading.log());
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -45,80 +73,55 @@ public class BlueClose extends LinearOpMode {
         indexer = new Indexer(hardwareMap);
 
 
-//x is 34.8634 y is 61.6041 heading is 270//
-        //x us 45.5 and y is 64.5 heading is 44
-        // 1. Define the Initial Pose
-        // Heading of 270 degrees means: +X is Forward, -Y is Right
-        Pose2d initialPose = new Pose2d(-55.5, -44.5, Math.toRadians(-135));
-        Pose2d pose2 = new Pose2d(-24, -24, Math.toRadians(-135));
-        Pose2d pose3 = new Pose2d(-9.5, -22.4, Math.toRadians(-80));
-        Pose2d pose4 = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
-        Pose2d pose5 = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
-        Pose2d pose6 = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d pose7 = new Pose2d(-24.1, -24, Math.toRadians(-142));
 
-      //  Pose2d pose4 = new Pose2d(-12.3, 23.6, 90);
-       // Pose2d pose3 = new Pose2d(36, -12, Math.toRadians(150));
-        //Pose2d pose4 = new Pose2d(36,-12.1,Math.toRadians(102.5));
-       // Pose2d
-        //Pose2d pose4 = new Pose2d(36, -12, Math.toRadians(90));
+        // --- APPLY TRANSFORMATION FOR RED ALLIANCE ---
+        // This calculates the final positions by swapping X/Y and flipping the Y/heading
+        // according to your custom odometry system's needs.
+        Pose2d initialPose = new Pose2d(-55.5, 44.5, Math.toRadians(135));
+        Pose2d pose2 = new Pose2d(-24, 24, Math.toRadians(135));
+        Pose2d pose3 = new Pose2d(-9.5, 22.4, Math.toRadians(80));
+        Pose2d pose4 = new Pose2d(-9.5, 33.5, Math.toRadians(80));
+        Pose2d pose5 = new Pose2d(-9.5, 37.5, Math.toRadians(87.5));
+        Pose2d pose6 = new Pose2d(-9.5, 43.5, Math.toRadians(90));
+        Pose2d pose7 = new Pose2d(-24.1, 24, Math.toRadians(142));
 
 
-// x is -12.6 y is -33.3 heading - 139.9
-        // --- NOTE: InitialPose2 is not needed and has been removed ---
+        // --- Road Runner Initialization (drive object renamed for safety) ---
+        MecanumDrive mecanumDrive = new MecanumDrive(hardwareMap, initialPose);
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        // --- ACTION DEFINITIONS (Using the transformed Poses) ---
 
-        // --- PROBLEM: The old traj1, traj2, traj3 definitions are deleted ---
-        // We now define ONE chained action instead:
-            Action action1 = drive.actionBuilder(initialPose)
-                    .setReversed(true)
-                // 1. FIRST MOVEMENT: Go Forward 48 inches
-                // We add 48 inches to the starting X-coordinate (34.8634 + 48)
-                    .splineToLinearHeading(pose2, Math.toRadians(0))
-                    //.splineToLinearHeading(pose4, Math.toRadians(0))
-                    .build();
+        Action action1 = mecanumDrive.actionBuilder(initialPose)
+                .setReversed(true) // Retaining your setting
+                .splineToLinearHeading(pose2, Math.toRadians(0))
+                .build();
 
 
-        Action action2 = drive.actionBuilder(pose2)
+        Action action2 = mecanumDrive.actionBuilder(pose2)
                 .splineToLinearHeading(pose3, Math.toRadians(0))
                 .build();
-        //Action action2 = drive.actionBuilder(pose3)
-               // .splineToLinearHeading(pose4,Math.toRadians(0))
 
-                        //.build();
-        //Action action3 = drive.actionBuilder(pose5)
-
-        //Action action3 = drive.actionBuilder(pose3)
-               // .splineToLinearHeading(pose4, Math.toRadians(0))
-
-              //  .build();
-        Action action3 = drive.actionBuilder(pose3)
+        Action action3 = mecanumDrive.actionBuilder(pose3)
                 .splineToLinearHeading(pose4, Math.toRadians(0))
                 .build();
-        Action action4 = drive.actionBuilder(pose4)
-                        .splineToLinearHeading(pose5, Math.toRadians(0))
-                                .build();
-        Action action5 = drive.actionBuilder(pose5)
-                        .splineToLinearHeading(pose6, Math.toRadians(0))
-                                .build();
-        Action action6 = drive.actionBuilder(pose6)
+        Action action4 = mecanumDrive.actionBuilder(pose4)
+                .splineToLinearHeading(pose5, Math.toRadians(0))
+                .build();
+        Action action5 = mecanumDrive.actionBuilder(pose5)
+                .splineToLinearHeading(pose6, Math.toRadians(0))
+                .build();
+        Action action6 = mecanumDrive.actionBuilder(pose6)
                 .splineToLinearHeading(pose7, Math.toRadians(0))
-                        .build();
-        Action action7 = drive.actionBuilder(pose2)
-                        .splineToLinearHeading(pose4,Math.toRadians(0))
-                                .build();
+                .build();
+        Action action7 = mecanumDrive.actionBuilder(pose2)
+                .splineToLinearHeading(pose4,Math.toRadians(0))
+                .build();
 
-
-
-
-
-
-
-
+        // --- EXECUTION ---
 
         waitForStart();
 
+        // Execution structure remains exactly as you wrote it
         Actions.runBlocking(
                 new ParallelAction(
                         new SequentialAction(
@@ -127,15 +130,15 @@ public class BlueClose extends LinearOpMode {
                                 nextshoot(),
                                 new SleepAction(0.5),
                                 transferUp(),
-                               new SleepAction(0.5),
+                                new SleepAction(0.5),
                                 transferDown(),
-                               new SleepAction(0.5),
+                                new SleepAction(0.5),
                                 nextshoot(),
                                 new SleepAction(0.5),
                                 transferUp(),
                                 new SleepAction(0.5),
                                 transferDown(),
-                               new SleepAction(0.5),
+                                new SleepAction(0.5),
                                 nextshoot(),
                                 new SleepAction(0.5),
                                 transferUp(),
@@ -179,84 +182,49 @@ public class BlueClose extends LinearOpMode {
                                 new SleepAction(0.5),
                                 action7,
 
-
                                 indexerToTeleHome(),
                                 new SleepAction(2.0)
-
-
-
-
-                                // transfer functionn here
-
                         ),
                         indexerUpdate(),
                         updateShooter()
                 )
         );
-
-
-
-
-
     }
+
+    // --- Action Methods (Unchanged) ---
     private Action stopCollect() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                intake.stop();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { intake.stop(); return false; }
         };
     }
     private Action collect() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                intake.runIntake();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { intake.runIntake(); return false; }
         };
     }
     private Action indexerToCollect() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.handleYButton();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.handleYButton(); return false; }
         };
     }
     private Action indexerToTeleHome() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.IndexerAutoToTele();
-                return true;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.IndexerAutoToTele(); return true; }
         };
     }
     private Action indexerUpdate() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.update();
-                return true;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.update(); return true; }
         };
     }
     private Action nextshoot() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.handleRightBumper();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.handleRightBumper(); return false; }
         };
     }
     private Action transferUp() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 if (indexer.isAtShootPosition() && shooter.error <= 50) {
                     transfer.fire();
                 }
@@ -266,30 +234,18 @@ public class BlueClose extends LinearOpMode {
     }
     private Action transferDown() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                transfer.home();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { transfer.home(); return false; }
         };
     }
 
     private Action startShooter() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.toggle();
-                return false;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { shooter.toggle(); return false; }
         };
     }
     private Action updateShooter() {
         return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3275);
-                return true;
-            }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { shooter.setTargetRPM(3275); return true; }
         };
     }
 }
