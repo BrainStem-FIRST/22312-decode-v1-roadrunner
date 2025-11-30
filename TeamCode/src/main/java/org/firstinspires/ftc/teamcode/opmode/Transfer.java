@@ -32,6 +32,6 @@ public class Transfer {
     }
 
     public void home() {
-        lifter.setPosition(0.0); // Moves to TRANSFER_LIFTER_DOWN_POS
+        lifter.setPosition(0.01); // Moves to TRANSFER_LIFTER_DOWN_POS
     }
 }

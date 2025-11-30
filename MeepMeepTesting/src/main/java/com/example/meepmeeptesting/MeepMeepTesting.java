@@ -16,22 +16,29 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        redFarSolo.runAction(redFarSolo.getDrive().actionBuilder(new Pose2d(60, 20, Math.toRadians(180)))
+//        redFarSolo.runAction(redFarSolo.getDrive().actionBuilder(new Pose2d(60, 20, Math.toRadians(180)))
+//                .waitSeconds(1)
+//                .splineToLinearHeading(new Pose2d(35, 35, Math.toRadians(90)), Math.toRadians(90))
+//                .lineToY(50)
+//                .setTangent(Math.toRadians(-45))
+//                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
+//                .waitSeconds(1)
+//                .splineToLinearHeading(new Pose2d(15, 35, Math.toRadians(90)), Math.toRadians(90))
+//                .lineToY(50)
+//                .setTangent(Math.toRadians(-45))
+//                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
+//                .waitSeconds(1)
+//                .splineToLinearHeading(new Pose2d(-15, 35, Math.toRadians(90)), Math.toRadians(90))
+//                .lineToY(50)
+//                .setTangent(Math.toRadians(-45))
+//                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
+//                .build());
+
+        redFarSolo.runAction(redFarSolo.getDrive().actionBuilder(new Pose2d(-55.5, 44.5, Math.toRadians(135)))
                 .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(35, 35, Math.toRadians(90)), Math.toRadians(90))
-                .lineToY(50)
-                .setTangent(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(15, 35, Math.toRadians(90)), Math.toRadians(90))
-                .lineToY(50)
-                .setTangent(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
-                .waitSeconds(1)
-                .splineToLinearHeading(new Pose2d(-15, 35, Math.toRadians(90)), Math.toRadians(90))
-                .lineToY(50)
-                .setTangent(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(60, 20, Math.toRadians(180)), Math.toRadians(-45))
+                .splineToLinearHeading(new Pose2d(-24, 24, Math.toRadians(135)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(-13.7, 22.4, Math.toRadians(90)), Math.toRadians(0))
+
                 .build());
 
         /// Red far side partner
