@@ -230,9 +230,8 @@ public class BlueClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.indexerMotor.setTargetPosition(0);
-                double errorThreshold = 1;
-                return Math.abs(indexer.indexerMotor.getCurrentPosition()) > errorThreshold;
+                indexer.goToHome();
+                return true;
             }
         };
     }
@@ -288,7 +287,7 @@ public class BlueClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(RobotConstants.SHOOTER_RPM_NEAR);
+                shooter.setTargetRPM(3275);
                 return true;
             }
         };
