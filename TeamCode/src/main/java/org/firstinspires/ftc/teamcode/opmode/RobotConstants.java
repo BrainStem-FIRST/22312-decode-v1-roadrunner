@@ -15,7 +15,7 @@ public class RobotConstants {
     public static double SHOOTER_KP = 50.0;
     public static double SHOOTER_KI = 0.0;
     public static double SHOOTER_KD = 0.0;
-    public static double SHOOTER_RPM_FAR = 4250.0;
+    public static double SHOOTER_RPM_FAR = 4125.0;
     public static double SHOOTER_RPM_NEAR = 3300.0;
 
     // --- Transfer ---
