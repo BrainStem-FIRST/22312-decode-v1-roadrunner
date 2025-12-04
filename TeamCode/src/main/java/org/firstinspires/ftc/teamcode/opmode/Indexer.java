@@ -176,7 +176,7 @@ public class Indexer {
         indexerMotor.setPower(RobotConstants.INDEXER_POWER);
     }
     public void IndexerAutoToTele() {
-        indexerMotor.setTargetPosition((0));
+        indexerMotor.setTargetPosition((1441));
         indexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         indexerMotor.setPower(RobotConstants.INDEXER_POWER);
     }

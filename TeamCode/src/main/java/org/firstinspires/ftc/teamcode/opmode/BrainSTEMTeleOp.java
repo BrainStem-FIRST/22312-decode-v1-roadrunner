@@ -27,6 +27,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
     // Driver 1 Toggles
     private boolean previousD1RBState = false;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         // 1. SET ALLIANCE OFFSET FIRST
@@ -56,6 +57,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             // These just run the background logic. They do not return values.
             vision.update();
             rapidFire.update();
+
 
             // ============================================================
             // DRIVER 1 (D1): CHASSIS, INTAKE, & AUTO FIRE

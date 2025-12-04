@@ -21,8 +21,8 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "Blue Close Auto")
-public class BlueClose extends LinearOpMode {
+@Autonomous(name = "JustLetBigBroDoIt")
+public class JustLetBigBroDoIt extends LinearOpMode {
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -52,12 +52,11 @@ public class BlueClose extends LinearOpMode {
         Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
         Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
         Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-139));
+        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-142));
         Pose2d pose6 = new Pose2d(10.5, -26, Math.toRadians(-80));
         Pose2d pose7 = new Pose2d(10.5, -33.5, Math.toRadians(-80));
         Pose2d pose8 = new Pose2d(11, -37.5, Math.toRadians(-85));
-        Pose2d pose9 = new Pose2d(11.25, -43, Math.toRadians(-90));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-130));
+        Pose2d pose9 = new Pose2d(11.25, -43.5, Math.toRadians(-90));
 
 
 
@@ -65,10 +64,10 @@ public class BlueClose extends LinearOpMode {
 
 
 
-      //  Pose2d pose4 = new Pose2d(-12.3, 23.6, 90);
-       // Pose2d pose3 = new Pose2d(36, -12, Math.toRadians(150));
+        //  Pose2d pose4 = new Pose2d(-12.3, 23.6, 90);
+        // Pose2d pose3 = new Pose2d(36, -12, Math.toRadians(150));
         //Pose2d pose4 = new Pose2d(36,-12.1,Math.toRadians(102.5));
-       // Pose2d
+        // Pose2d
         //Pose2d pose4 = new Pose2d(36, -12, Math.toRadians(90));
 
 
@@ -79,58 +78,58 @@ public class BlueClose extends LinearOpMode {
 
         // --- PROBLEM: The old traj1, traj2, traj3 definitions are deleted ---
         // We now define ONE chained action instead:
-            Action driveToShootPreload = drive.actionBuilder(initialPose)
-                    .setReversed(true)
+        Action driveToShootPreload = drive.actionBuilder(initialPose)
+                .setReversed(true)
                 // 1. FIRST MOVEMENT: Go Forward 48 inches
                 // We add 48 inches to the starting X-coordinate (34.8634 + 48)
-                    .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
-                    //.splineToLinearHeading(pose4, Math.toRadians(0))
-                    .build();
+                .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
+                //.splineToLinearHeading(pose4, Math.toRadians(0))
+                .build();
 
 
         Action driveToPickupFirstLine = drive.actionBuilder(blueDriveToShootingPose)
                 .splineToLinearHeading(blueReadyToPickupFirstLinePose, Math.toRadians(0))
                 .build();
         //Action action2 = drive.actionBuilder(pose3)
-               // .splineToLinearHeading(pose4,Math.toRadians(0))
+        // .splineToLinearHeading(pose4,Math.toRadians(0))
 
-                        //.build();
+        //.build();
         //Action action3 = drive.actionBuilder(pose5)
 
         //Action action3 = drive.actionBuilder(pose3)
-               // .splineToLinearHeading(pose4, Math.toRadians(0))
+        // .splineToLinearHeading(pose4, Math.toRadians(0))
 
-              //  .build();
+        //  .build();
         Action driveToFirstLineFirstBall = drive.actionBuilder(blueReadyToPickupFirstLinePose)
                 .splineToLinearHeading(bluePickupFirstLineFirstBallPose, Math.toRadians(0))
                 .build();
         Action driveToFirstLineSecondBall = drive.actionBuilder(bluePickupFirstLineFirstBallPose)
-                        .splineToLinearHeading(bluePickupFirstLineSecondBallPose, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(bluePickupFirstLineSecondBallPose, Math.toRadians(0))
+                .build();
         Action driveToFirstLineThirdBall = drive.actionBuilder(bluePickupFirstLineSecondBallPose)
-                        .splineToLinearHeading(bluePickupFirstLineThirdBallPose, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(bluePickupFirstLineThirdBallPose, Math.toRadians(0))
+                .build();
         Action driveToShootFirstLine = drive.actionBuilder(bluePickupFirstLineThirdBallPose)
                 .splineToLinearHeading(blueShootFirstLinePose, Math.toRadians(0))
-                        .build();
+                .build();
         Action action7 = drive.actionBuilder(blueDriveToShootingPose)
-                        .splineToLinearHeading(bluePickupFirstLineFirstBallPose,Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(bluePickupFirstLineFirstBallPose,Math.toRadians(0))
+                .build();
         Action action8 = drive.actionBuilder(blueDriveToShootingPose)
-                        .splineToLinearHeading(pose6, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose6, Math.toRadians(0))
+                .build();
         Action action9 = drive.actionBuilder(pose6)
-                        .splineToLinearHeading(pose7, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose7, Math.toRadians(0))
+                .build();
         Action action10 = drive.actionBuilder(pose7)
-                        .splineToLinearHeading(pose8, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose8, Math.toRadians(0))
+                .build();
         Action action11 = drive.actionBuilder(pose8)
-                        .splineToLinearHeading(pose9, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose9, Math.toRadians(0))
+                .build();
         Action action12 = drive.actionBuilder(pose9)
-                        .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
+                .build();
 
 
 
@@ -151,15 +150,15 @@ public class BlueClose extends LinearOpMode {
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
-                               new SleepAction(0.25),
+                                new SleepAction(0.25),
                                 transferDown(),
-                               new SleepAction(0.25),
+                                new SleepAction(0.25),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.25),
                                 transferDown(),
-                               new SleepAction(0.25),
+                                new SleepAction(0.25),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
@@ -184,9 +183,9 @@ public class BlueClose extends LinearOpMode {
                                 driveToFirstLineThirdBall,
                                 stopCollect(),
                                 new SleepAction(0.35),
-                                nextshoot(),
                                 driveToShootFirstLine,
-
+                                nextshoot(),
+                                new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
@@ -203,10 +202,10 @@ public class BlueClose extends LinearOpMode {
                                 new SleepAction(0.35),
                                 transferDown(),
                                 new SleepAction(0.2),
-                               collect(),
-                               indexerToCollect(),
-                               new SleepAction(0.2),
-                               action8,
+                                collect(),
+                                indexerToCollect(),
+                                new SleepAction(0.2),
+                                action8,
                                 action9,
                                 new SleepAction(0.35),
                                 indexerToCollect(),
@@ -246,7 +245,6 @@ public class BlueClose extends LinearOpMode {
                                 new SleepAction(0.2),
                                 transferDown(),
                                 action7,
-                                indexerToTeleHome(),
 
                                 new SleepAction(3)
 

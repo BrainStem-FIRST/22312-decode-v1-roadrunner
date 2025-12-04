@@ -113,6 +113,7 @@ public class BlueFarAuto extends LinearOpMode {
 
 
 
+
 // x is 57.7 y is-16.5 heading is -180
         //2nd is 61.1 for x -15.1 for y heading is -180
         waitForStart();
