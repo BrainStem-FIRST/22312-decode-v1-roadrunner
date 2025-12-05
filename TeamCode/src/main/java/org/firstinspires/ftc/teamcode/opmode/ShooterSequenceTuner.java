@@ -22,7 +22,7 @@ public class ShooterSequenceTuner extends LinearOpMode {
     public void runOpMode() {
         // Initialize Hardware
         shooter = new Shooter(hardwareMap);
-        indexer = new Indexer(hardwareMap);
+        indexer = new Indexer(hardwareMap, gamepad2);
         transfer = new Transfer(hardwareMap);
         rapidFire = new ThreeBallRapidFire(shooter, indexer, transfer);
 
