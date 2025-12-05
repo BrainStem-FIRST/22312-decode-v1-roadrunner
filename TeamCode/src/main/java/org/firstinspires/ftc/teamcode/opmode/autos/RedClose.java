@@ -11,15 +11,12 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.opmode.Drive;
 import org.firstinspires.ftc.teamcode.opmode.Indexer;
 import org.firstinspires.ftc.teamcode.opmode.Intake;
 import org.firstinspires.ftc.teamcode.opmode.PinpointLocalizer;
-import org.firstinspires.ftc.teamcode.opmode.RobotConstants;
 import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
@@ -219,7 +216,7 @@ public class RedClose extends LinearOpMode {
     }
     private Action nextshoot() {
         return new Action() {
-            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.handleRightBumper(); return false; }
+            @Override public boolean run(@NonNull TelemetryPacket telemetryPacket) { indexer.handleRapidFire(); return false; }
         };
     }
     private Action transferUp() {

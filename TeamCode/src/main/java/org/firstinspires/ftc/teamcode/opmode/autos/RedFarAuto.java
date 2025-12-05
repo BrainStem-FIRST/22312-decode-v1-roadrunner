@@ -272,7 +272,7 @@ public class RedFarAuto extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.handleRightBumper();
+                indexer.handleRapidFire();
                 return false;
             }
         };

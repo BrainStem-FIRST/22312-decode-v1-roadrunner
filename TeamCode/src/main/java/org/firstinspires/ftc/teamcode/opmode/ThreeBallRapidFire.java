@@ -95,7 +95,7 @@ public class ThreeBallRapidFire {
                 // 2. Ensure Indexer is in a "Shoot" state (Even).
                 // If in "Collect" (Odd), advance it once immediately.
                 if (!indexer.isAtShootPosition()) {
-                    indexer.handleRightBumper(); // Moves from Odd -> Even (Shoot)
+                    indexer.handleRapidFire(); // Moves from Odd -> Even (Shoot)
                 }
 
                 currentState = FireState.WAIT_FOR_ALIGNMENT;
@@ -146,7 +146,7 @@ public class ThreeBallRapidFire {
 
             case ADVANCE_INDEXER:
                 // 6. Move Spindexer to next ball
-                indexer.handleRightBumper(); // Moves from Shoot -> Shoot (skipping collect)
+                indexer.handleRapidFire(); // Moves from Shoot -> Shoot (skipping collect)
 
                 // Go back to waiting for alignment
                 timer.reset();

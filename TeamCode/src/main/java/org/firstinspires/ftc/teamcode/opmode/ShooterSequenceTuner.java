@@ -64,7 +64,7 @@ public class ShooterSequenceTuner extends LinearOpMode {
             // 3. Action Triggers
             // FIRE SEQUENCE (Right Bumper)
             if (gamepad1.right_bumper && !lastRB) {
-                indexer.handleRightBumper();
+                indexer.handleRapidFire();
                 sleep(250);
                 rapidFire.startSequence();
             }

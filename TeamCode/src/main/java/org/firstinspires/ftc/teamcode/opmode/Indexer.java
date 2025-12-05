@@ -2,12 +2,17 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 // Portions of this file’s structure were refactored with assistance from an LLM under mentor supervision.
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+@Config
 public class Indexer {
+    public static double flickTime = 0.2;
+    public ElapsedTime flickTimer = new ElapsedTime();
 
     public DcMotorEx indexerMotor;
 
@@ -20,7 +25,7 @@ public class Indexer {
     private double shootPos1, shootPos2, shootPos3;
 
     // Tuning variable
-    private double kP = 0.005;
+    public static double kP = 0.007;
 
     public Indexer(HardwareMap hwMap) {
         init(hwMap);
@@ -34,6 +39,7 @@ public class Indexer {
         indexerMotor.setPower(0);
 
         resetPositionVariables();
+        flickTimer.reset();
     }
 
     /**
@@ -42,11 +48,20 @@ public class Indexer {
      * - If in Collect (Odd): Move to Shoot (CtoS) [+1]
      * - If in Shoot (Even): Move to next Shoot (StoS) [+2]
      */
-    public void handleRightBumper() {
+    public void handleRapidFire() {
         if (isOddState()) {
             CtoS_or_StoC_Advance(); // CtoS (+1)
         } else {
             CtoC_or_StoS_Advance(); // StoS (+2)
+        }
+    }
+    public void handleRightBumper() {
+        if (flickTimer.seconds() > flickTime) {
+            if (isOddState()) {
+                CtoS_or_StoC_Advance(); // CtoS (+1)
+            } else {
+                CtoC_or_StoS_Advance(); // StoS (+2)
+            }
         }
     }
 
