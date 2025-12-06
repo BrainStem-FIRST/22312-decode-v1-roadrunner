@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.utils.AutoCommands;
 import org.firstinspires.ftc.teamcode.utils.AutoPositions;
 
 @Disabled
-@Autonomous(name="Blue Far Partner Auto", group="Robot")
+@Autonomous(name="Blue Far Partner Auto(testing)", group="Robot")
 public class BlueFarPartnerAuto extends LinearOpMode {
 
     @Override

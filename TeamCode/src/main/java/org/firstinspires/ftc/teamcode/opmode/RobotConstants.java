@@ -37,9 +37,9 @@ public class RobotConstants {
 
     // ALLIANCE SPECIFIC OFFSETS (Tune these!)
     // If Red shoots too far left, change this number.
-    public static double VISION_OFFSET_RED = -2.0;
+    public static double VISION_OFFSET_RED = -3.0;
     // If Blue shoots too far right, change this number.
-    public static double VISION_OFFSET_BLUE = 2.0;
+    public static double VISION_OFFSET_BLUE = 3.0;
 
     // --- Indexer ---
     public static double INDEXER_POWER = 0.5;

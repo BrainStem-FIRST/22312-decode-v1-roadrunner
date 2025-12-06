@@ -57,7 +57,7 @@ public class RedClose extends LinearOpMode {
         Pose2d pose7 = new Pose2d(10.5, 33.5, Math.toRadians(80));
         Pose2d pose8 = new Pose2d(11, 37.5, Math.toRadians(85));
         Pose2d pose9 = new Pose2d(11.25, 43, Math.toRadians(90));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, 24, Math.toRadians(130));
+        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, 24, Math.toRadians(133));
 
 
 
@@ -200,7 +200,7 @@ public class RedClose extends LinearOpMode {
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
-                                new SleepAction(0.35),
+                                new SleepAction(0.25),
                                 transferDown(),
                                 new SleepAction(0.2),
                                 collect(),
@@ -223,25 +223,25 @@ public class RedClose extends LinearOpMode {
                                 new SleepAction(0.35),
                                 nextshoot(),
 
-                                new SleepAction(0.2),
+                                new SleepAction(0.4),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
                                 new SleepAction(0.2),
                                 nextshoot(),
-                                new SleepAction(0.6),
+                                new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
                                 new SleepAction(0.2),
                                 nextshoot(),
-                                new SleepAction(0.6),
+                                new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
                                 new SleepAction(0.2),
                                 nextshoot(),
-                                new SleepAction(0.6),
+                                new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
@@ -371,7 +371,7 @@ public class RedClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3225);
+                shooter.setTargetRPM(3150);
                 return true;
             }
         };
