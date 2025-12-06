@@ -22,7 +22,7 @@ public class ShooterSequenceTuner extends LinearOpMode {
     public void runOpMode() {
         // Initialize Hardware
         shooter = new Shooter(hardwareMap);
-        indexer = new Indexer(hardwareMap, gamepad2);
+        indexer = new Indexer(hardwareMap);
         transfer = new Transfer(hardwareMap);
         rapidFire = new ThreeBallRapidFire(shooter, indexer, transfer);
 
@@ -64,7 +64,7 @@ public class ShooterSequenceTuner extends LinearOpMode {
             // 3. Action Triggers
             // FIRE SEQUENCE (Right Bumper)
             if (gamepad1.right_bumper && !lastRB) {
-                indexer.handleRapidFire();
+                indexer.handleRightBumper();
                 sleep(250);
                 rapidFire.startSequence();
             }

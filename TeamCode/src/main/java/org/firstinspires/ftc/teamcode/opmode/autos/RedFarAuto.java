@@ -40,7 +40,7 @@ public class RedFarAuto extends LinearOpMode {
 //        pinpoint = new PinpointLocalizer(hardwareMap, new Pose2d(0, 0, 0), telemetry);
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
-        indexer = new Indexer(hardwareMap, gamepad2);
+        indexer = new Indexer(hardwareMap);
 
 
 //x is 34.8634 y is 61.6041 heading is 270//
