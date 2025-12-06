@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 // Note: No @TeleOp annotation here. This is the logic engine only.
 // It is ABSTRACT because it needs RedTeleOp or BlueTeleOp to tell it the offset.

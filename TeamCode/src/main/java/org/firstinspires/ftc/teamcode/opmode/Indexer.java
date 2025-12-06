@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class Indexer {
+    public static double flipperWaitTime = 0;
     public ElapsedTime flickTimer;
 
     public DcMotorEx indexerMotor;
@@ -53,7 +54,7 @@ public class Indexer {
      * - If in Shoot (Even): Move to next Shoot (StoS) [+2]
      */
     public void handleRightBumper() {
-        if (flickTimer.seconds() > 0.2) {
+        if (flickTimer.seconds() >= flipperWaitTime) {
             if (isOddState()) {
                 CtoS_or_StoC_Advance(); // CtoS (+1)
             } else {
