@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode.autos;
 
 import androidx.annotation.NonNull;
 
+//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
@@ -21,8 +22,10 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "Blue Close Auto")
-public class BlueClose extends LinearOpMode {
+@Autonomous(name = "Red Close With Gate")
+//@Config
+public class RedCloseWGate extends LinearOpMode {
+    public static double gateWaitTime = 2.5;
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -39,31 +42,28 @@ public class BlueClose extends LinearOpMode {
 //        pinpoint = new PinpointLocalizer(hardwareMap, new Pose2d(0, 0, 0), telemetry);
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
-        indexer = new Indexer(hardwareMap, gamepad2);
+        indexer = new Indexer(hardwareMap);
 
 
 //x is 34.8634 y is 61.6041 heading is 270//
         //x us 45.5 and y is 64.5 heading is 44
         // 1. Define the Initial Pose
         // Heading of 270 degrees means: +X is Forward, -Y is Right
-        Pose2d initialPose = new Pose2d(-55.5, -44.5, Math.toRadians(-135));
-        Pose2d blueDriveToShootingPose = new Pose2d(-24, -24, Math.toRadians(-135));
-        Pose2d blueReadyToPickupFirstLinePose = new Pose2d(-9.5, -22.4, Math.toRadians(-80));
-        Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
-        Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
-        Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-139));
-        Pose2d pose6 = new Pose2d(10.5, -26, Math.toRadians(-80));
-        Pose2d pose7 = new Pose2d(10.5, -33.5, Math.toRadians(-80));
-        Pose2d pose8 = new Pose2d(11, -37.5, Math.toRadians(-85));
-        Pose2d pose9 = new Pose2d(11.25, -43, Math.toRadians(-90));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-133));
-
-
-
-
-
-
+        Pose2d initialPose = new Pose2d(-55.5, 44.5, Math.toRadians(135));
+        Pose2d blueDriveToShootingPose = new Pose2d(-24, 24, Math.toRadians(135));
+        Pose2d blueReadyToPickupFirstLinePose = new Pose2d(-9.5, 22.4, Math.toRadians(80));
+        Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, 33.5, Math.toRadians(80));
+        Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, 37.5, Math.toRadians(87.5));
+        Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, 43.5, Math.toRadians(90));
+        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, 24, Math.toRadians(139));
+        Pose2d pose6 = new Pose2d(10.5, 26, Math.toRadians(80));
+        Pose2d pose7 = new Pose2d(10.5, 33.5, Math.toRadians(80));
+        Pose2d pose8 = new Pose2d(11, 37.5, Math.toRadians(85));
+        Pose2d pose9 = new Pose2d(11.25, 43, Math.toRadians(90));
+        Pose2d pose10 = new Pose2d(-2, 59, Math.toRadians(0));
+        Pose2d supportingPose = new Pose2d(-2, 47, Math.toRadians(0));
+        Pose2d pose11 = new Pose2d(-20, 57, Math.toRadians(0));
+        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, 24, Math.toRadians(130));
 
 
 
@@ -120,23 +120,33 @@ public class BlueClose extends LinearOpMode {
                 .splineToLinearHeading(blueShootFirstLinePose, Math.toRadians(0))
                 .build();
         Action action7 = drive.actionBuilder(blueDriveToShootingPose)
-                        .splineToLinearHeading(bluePickupFirstLineFirstBallPose,Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(bluePickupFirstLineFirstBallPose,Math.toRadians(0))
+                .build();
         Action action8 = drive.actionBuilder(blueDriveToShootingPose)
-                        .splineToLinearHeading(pose6, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose6, Math.toRadians(0))
+                .build();
         Action action9 = drive.actionBuilder(pose6)
-                        .splineToLinearHeading(pose7, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose7, Math.toRadians(0))
+                .build();
         Action action10 = drive.actionBuilder(pose7)
-                        .splineToLinearHeading(pose8, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose8, Math.toRadians(0))
+                .build();
         Action action11 = drive.actionBuilder(pose8)
-                        .splineToLinearHeading(pose9, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(pose9, Math.toRadians(0))
+                .build();
         Action action12 = drive.actionBuilder(pose9)
-                        .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
-                                .build();
+                .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
+                .build();
+        Action action13 = drive.actionBuilder(blueShootFirstLinePose)
+                .splineToLinearHeading(supportingPose, Math.toRadians(0))
+                .build();
+        Action action14 = drive.actionBuilder(supportingPose)
+                .splineToLinearHeading(pose10, Math.toRadians(0))
+                .build();
+        Action driveOffPath = drive.actionBuilder(pose10)
+                .splineToLinearHeading(pose11, Math.toRadians(0))
+                .build();
+
 
 
 
@@ -157,9 +167,9 @@ public class BlueClose extends LinearOpMode {
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
-                               new SleepAction(0.25),
+                                new SleepAction(0.25),
                                 transferDown(),
-                               new SleepAction(0.25),
+                                new SleepAction(0.25),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
@@ -209,49 +219,17 @@ public class BlueClose extends LinearOpMode {
                                 new SleepAction(0.35),
                                 transferDown(),
                                 new SleepAction(0.2),
-                               collect(),
-                               indexerToCollect(),
-                               new SleepAction(0.2),
-                               action8,
-                                action9,
-                                new SleepAction(0.35),
+                                collect(),
                                 indexerToCollect(),
-                                new SleepAction(0.35),
-                                action10,
-                                new SleepAction(0.35),
-                                indexerToCollect(),
-                                new SleepAction(0.35),
-                                action11,
-                                new SleepAction(0.35),
-                                indexerToCollect(),
-                                new SleepAction(0.35),
-                                action12,
-                                new SleepAction(0.35),
-                                nextshoot(),
+                                new SleepAction(1.5),
+                                action13,
+                                new SleepAction(1),
+                                action14,
+                                new SleepAction(gateWaitTime),
+                                driveOffPath,
 
-                                new SleepAction(0.2),
-                                transferUp(),
-                                new SleepAction(0.2),
-                                transferDown(),
-                                new SleepAction(0.2),
-                                nextshoot(),
-                                new SleepAction(0.6),
-                                transferUp(),
-                                new SleepAction(0.2),
-                                transferDown(),
-                                new SleepAction(0.2),
-                                nextshoot(),
-                                new SleepAction(0.6),
-                                transferUp(),
-                                new SleepAction(0.2),
-                                transferDown(),
-                                new SleepAction(0.2),
-                                nextshoot(),
-                                new SleepAction(0.6),
-                                transferUp(),
-                                new SleepAction(0.2),
-                                transferDown(),
-                                action7,
+
+
                                 indexerToTeleHome(),
 
                                 new SleepAction(3)
@@ -338,7 +316,7 @@ public class BlueClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.rapidFireRB();
+                indexer.handleRightBumper();
                 return false;
             }
         };

@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+//import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 // Note: No @TeleOp annotation here. This is the logic engine only.
 // It is ABSTRACT because it needs RedTeleOp or BlueTeleOp to tell it the offset.
+//@Config
 public abstract class BrainSTEMTeleOp extends LinearOpMode {
+    public static double shooterThreshold = 100;
 
     // Abstract method: Child classes must implement this to tell us the offset
     public abstract double getVisionOffset();
@@ -54,6 +58,9 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            if (gamepad2.x)
+                indexer.flickTimer.reset();
+
             // --- 1. SENSOR & LOGIC UPDATE ---
             // These just run the background logic. They do not return values.
             vision.update();
@@ -93,7 +100,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             // --- 3-BALL RAPID FIRE (Right Bumper) ---
             boolean currentD1RBState = gamepad1.right_bumper;
             if (currentD1RBState && !previousD1RBState) {
-                indexer.handleRightBumper();
+                indexer.handleRapidFire();
                 sleep(350);
                 rapidFire.startSequence();
             }
@@ -113,6 +120,10 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             boolean currentAState = gamepad2.a;
             if (currentAState && !previousAState) {
                 shooter.toggle();
+            }
+            if(gamepad1.dpad_up){
+
+
             }
             previousAState = currentAState;
 
@@ -164,7 +175,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
 
             // 2. Define "Ready" Conditions
             // Shooter: Must be spinning (isShooting) AND within 50 RPM of target
-            boolean isShooterReady = shooter.isShooting() && (currentShooterError <= 50);
+            boolean isShooterReady = shooter.isShooting() && (currentShooterError <= shooterThreshold);
 
             // Indexer: Must be in a "Shoot" (Even) position AND physically aligned
             // Note: I widened the tolerance to 10 ticks (was 3) to make the button more responsive.
@@ -189,6 +200,10 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
                 }
             }
 
+
+            
+            telemetry.addData("indexer/shooter ready", isIndexerReady + " | " + isShooterReady);
+
             // --- TELEMETRY ---
             vision.printInfo(telemetry);
             telemetry.addData("Offset", RobotConstants.VISION_AIM_OFFSET);
@@ -200,6 +215,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             telemetry.addData("Auto Fire Status", rapidFire.getStatus());
             telemetry.update();
         }
+
 
         vision.stop();
     }

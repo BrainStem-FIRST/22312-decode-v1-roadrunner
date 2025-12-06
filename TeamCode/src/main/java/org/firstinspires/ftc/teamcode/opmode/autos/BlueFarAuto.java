@@ -83,22 +83,22 @@ public class BlueFarAuto extends LinearOpMode {
                 .build();
         Action action2 = drive.actionBuilder(supportingPose)
                 .splineToLinearHeading(pose3, Math.toRadians(0))
-                        .build();
+                .build();
         Action action3 = drive.actionBuilder(pose3)
                 .splineToLinearHeading(pose4, Math.toRadians(0))
-                        .build();
+                .build();
         Action action4 = drive.actionBuilder(pose4)
                 .splineToLinearHeading(pose5, Math.toRadians(0))
-                        .build();
+                .build();
         Action supportingAction = drive.actionBuilder(pose2)
                 .splineToLinearHeading(supportingPose, Math.toRadians(0))
-                        .build();
+                .build();
         Action action5 = drive.actionBuilder(pose5)
                 .splineToLinearHeading(initialPose, Math.toRadians(0), new TranslationalVelConstraint((30)))
-                        .build();
+                .build();
         Action action6 = drive.actionBuilder(initialPose)
                 .splineToLinearHeading(pose2, Math.toRadians(0), new TranslationalVelConstraint(30))
-                        .build();
+                .build();
         Action action7 = drive.actionBuilder(pose2)
                 .splineToLinearHeading(endingPose, Math.toRadians(0), new TranslationalVelConstraint(30))
                 .build();
@@ -183,7 +183,7 @@ public class BlueFarAuto extends LinearOpMode {
                                 new SleepAction(0.5),
                                 transferDown(),
                                 new SleepAction(0.5),
-                           action7,
+                                action7,
 
 
 
@@ -319,5 +319,4 @@ public class BlueFarAuto extends LinearOpMode {
         };
     }
 }
-
 

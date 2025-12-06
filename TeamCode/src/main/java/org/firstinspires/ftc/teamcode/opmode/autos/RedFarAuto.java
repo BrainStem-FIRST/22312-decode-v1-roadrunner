@@ -319,4 +319,3 @@ public class RedFarAuto extends LinearOpMode {
     }
 }
 
-

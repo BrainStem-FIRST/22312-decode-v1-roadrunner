@@ -45,6 +45,7 @@ public class Indexer {
         flickTimer.reset();
 
         resetPositionVariables();
+        flickTimer.reset();
     }
 
     /**
@@ -67,6 +68,15 @@ public class Indexer {
             CtoS_or_StoC_Advance(); // CtoS (+1)
         } else {
             CtoC_or_StoS_Advance(); // StoS (+2)
+        }
+    }
+    public void handleRightBumper() {
+        if (flickTimer.seconds() > flickTime) {
+            if (isOddState()) {
+                CtoS_or_StoC_Advance(); // CtoS (+1)
+            } else {
+                CtoC_or_StoS_Advance(); // StoS (+2)
+            }
         }
     }
 

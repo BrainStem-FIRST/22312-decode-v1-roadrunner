@@ -371,7 +371,7 @@ public class RedClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3225);
+                shooter.setTargetRPM(3150);
                 return true;
             }
         };
