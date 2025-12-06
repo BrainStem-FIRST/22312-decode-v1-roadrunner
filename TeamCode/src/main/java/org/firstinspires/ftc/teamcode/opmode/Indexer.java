@@ -5,14 +5,15 @@ package org.firstinspires.ftc.teamcode.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class Indexer {
-    public static double flickTime = 0.2;
-    public ElapsedTime flickTimer = new ElapsedTime();
+    public static double flipperWaitTime = 0;
+    public ElapsedTime flickTimer;
 
     public DcMotorEx indexerMotor;
 
@@ -25,10 +26,12 @@ public class Indexer {
     private double shootPos1, shootPos2, shootPos3;
 
     // Tuning variable
-    public static double kP = 0.007;
+    public static double kP = 0.006;
+    private Gamepad gamepad;
 
-    public Indexer(HardwareMap hwMap) {
+    public Indexer(HardwareMap hwMap, Gamepad gamepad2) {
         init(hwMap);
+        gamepad = gamepad2;
     }
 
     public void init(HardwareMap hwMap) {
@@ -37,6 +40,9 @@ public class Indexer {
         indexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         indexerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         indexerMotor.setPower(0);
+
+        flickTimer = new ElapsedTime();
+        flickTimer.reset();
 
         resetPositionVariables();
         flickTimer.reset();
@@ -48,7 +54,16 @@ public class Indexer {
      * - If in Collect (Odd): Move to Shoot (CtoS) [+1]
      * - If in Shoot (Even): Move to next Shoot (StoS) [+2]
      */
-    public void handleRapidFire() {
+    public void handleRightBumper() {
+        if (flickTimer.seconds() >= flipperWaitTime) {
+            if (isOddState()) {
+                CtoS_or_StoC_Advance(); // CtoS (+1)
+            } else {
+                CtoC_or_StoS_Advance(); // StoS (+2)
+            }
+        }
+    }
+    public void rapidFireRB() {
         if (isOddState()) {
             CtoS_or_StoC_Advance(); // CtoS (+1)
         } else {
@@ -176,6 +191,7 @@ public class Indexer {
 
         // Motor Power
         if (currentState != 0) {
+
             double error = currentTargetPosition - indexerMotor.getCurrentPosition();
             double power = kP * error;
             power = Range.clip(power, -1, 1);
@@ -191,7 +207,7 @@ public class Indexer {
         indexerMotor.setPower(RobotConstants.INDEXER_POWER);
     }
     public void IndexerAutoToTele() {
-        indexerMotor.setTargetPosition((0));
+        indexerMotor.setTargetPosition((1441));
         indexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         indexerMotor.setPower(RobotConstants.INDEXER_POWER);
     }

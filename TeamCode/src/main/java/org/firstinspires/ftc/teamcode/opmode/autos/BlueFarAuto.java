@@ -40,7 +40,7 @@ public class BlueFarAuto extends LinearOpMode {
 //        pinpoint = new PinpointLocalizer(hardwareMap, new Pose2d(0, 0, 0), telemetry);
         shooter = new Shooter(hardwareMap);
         transfer = new Transfer(hardwareMap);
-        indexer = new Indexer(hardwareMap);
+        indexer = new Indexer(hardwareMap, gamepad2);
 
 
 //x is 34.8634 y is 61.6041 heading is 270//
@@ -273,7 +273,7 @@ public class BlueFarAuto extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.handleRightBumper();
+                indexer.rapidFireRB();
                 return false;
             }
         };

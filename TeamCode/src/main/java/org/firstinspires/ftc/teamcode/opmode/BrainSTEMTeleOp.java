@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 //import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 // Note: No @TeleOp annotation here. This is the logic engine only.
 // It is ABSTRACT because it needs RedTeleOp or BlueTeleOp to tell it the offset.
@@ -30,6 +31,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
 
     // Driver 1 Toggles
     private boolean previousD1RBState = false;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -63,6 +65,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             // These just run the background logic. They do not return values.
             vision.update();
             rapidFire.update();
+
 
             // ============================================================
             // DRIVER 1 (D1): CHASSIS, INTAKE, & AUTO FIRE
