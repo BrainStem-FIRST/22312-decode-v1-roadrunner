@@ -23,12 +23,12 @@ public class RobotConstants {
     public static int TRANSFER_LIFTER_RAISED_POS = 1587;
 
     // --- AUTO FIRE TIMING ---
-    public static long AF_INDEXER_SETTLE_MS = 150;
-    public static long AF_TRANSFER_UP_MS = 150;
-    public static long AF_TRANSFER_DOWN_MS = 150;
+    public static long AF_INDEXER_SETTLE_MS = 130;
+    public static long AF_TRANSFER_UP_MS = 130;
+    public static long AF_TRANSFER_DOWN_MS = 130;
 
     // --- Vision & Aiming ---
-    public static double VISION_TURN_KP = 0.025;
+    public static double VISION_TURN_KP = 0.03;
     public static double VISION_MAX_TURN_SPEED = 0.5;
     public static double VISION_TOLERANCE_DEGREES = 1.0;
 
@@ -37,9 +37,9 @@ public class RobotConstants {
 
     // ALLIANCE SPECIFIC OFFSETS (Tune these!)
     // If Red shoots too far left, change this number.
-    public static double VISION_OFFSET_RED = -2.0;
+    public static double VISION_OFFSET_RED = -3.0;
     // If Blue shoots too far right, change this number.
-    public static double VISION_OFFSET_BLUE = 2.0;
+    public static double VISION_OFFSET_BLUE = 3.0;
 
     // --- Indexer ---
     public static double INDEXER_POWER = 0.5;
