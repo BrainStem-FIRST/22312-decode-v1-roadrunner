@@ -38,7 +38,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
         drive = new Drive(hardwareMap);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
-        indexer = new Indexer(hardwareMap, gamepad2);
+        indexer = new Indexer(hardwareMap);
         transfer = new Transfer(hardwareMap);
         vision = new Vision(hardwareMap);
 
@@ -89,14 +89,10 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
                 intake.stop();
             }
 
-
-            if (gamepad2.x)
-                indexer.flickTimer.reset();
-
             // --- 3-BALL RAPID FIRE (Right Bumper) ---
             boolean currentD1RBState = gamepad1.right_bumper;
             if (currentD1RBState && !previousD1RBState) {
-                indexer.rapidFireRB();
+                indexer.handleRightBumper();
                 sleep(350);
                 rapidFire.startSequence();
             }
@@ -129,13 +125,12 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             boolean currentYState = gamepad2.y;
             boolean currentBState = gamepad2.b;
 
-            if (gamepad2.x && shooter.error <= 50 && indexer.isAtShootPosition() && Math.abs(indexer.getIndexerError()) < 3) {
-                transfer.fire();
-            } else {
-                transfer.home();
-            }
-            telemetry.addData("shooter error", shooter.error);
-            telemetry.addData("indexer error", indexer.getIndexerError());
+//            if (gamepad2.x && shooter.error <= 50 && indexer.isAtShootPosition() && indexer.getIndexerError() < 3) {
+//            transfer.fire();
+//
+//            } else {
+//                transfer.home();
+//            }
 
             if (currentRBState && !previousRBState) indexer.handleRightBumper();
             if (currentYState && !previousYState)   indexer.handleYButton();
@@ -177,18 +172,21 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             // 3. Logic Gate
             // IF Rapid Fire is running -> Automation controls the servo (Ignore Manual)
             // IF Rapid Fire is NOT running -> Driver 2 controls the servo (Manual)
-//            if (rapidFire.isRunning()) {
-//            }
-//            else {
-//                // MANUAL CONTROL:
-//                // Only fire if Safety Interlocks pass AND Button is pressed
-//                if (gamepad2.x && isShooterReady && isIndexerReady) {
-//                    transfer.fire();
-//                } else {
-//                    // If not firing manually, keep the transfer retracted
-//                    transfer.home();
-//                }
-//            }
+            if (rapidFire.isRunning()) {
+                // AUTOMATION CONTROL:
+                // We do nothing here. 'rapidFire.update()' (called earlier) handles the servo.
+                // Do NOT call transfer.home() here, or you will fight the automation.
+            }
+            else {
+                // MANUAL CONTROL:
+                // Only fire if Safety Interlocks pass AND Button is pressed
+                if (gamepad2.x && isShooterReady && isIndexerReady) {
+                    transfer.fire();
+                } else {
+                    // If not firing manually, keep the transfer retracted
+                    transfer.home();
+                }
+            }
 
             // --- TELEMETRY ---
             vision.printInfo(telemetry);
@@ -199,10 +197,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
                 telemetry.addData("Shooter", "OFF");
             }
             telemetry.addData("Auto Fire Status", rapidFire.getStatus());
-            telemetry.addData("is shooter ready", isShooterReady);
-            telemetry.addData("is indexer ready", isIndexerReady);
             telemetry.update();
-
         }
 
         vision.stop();
