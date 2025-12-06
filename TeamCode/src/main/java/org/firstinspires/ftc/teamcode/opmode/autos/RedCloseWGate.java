@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode.autos;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
 @Autonomous(name = "Red Close With Gate")
-@Config
+//@Config
 public class RedCloseWGate extends LinearOpMode {
     public static double gateWaitTime = 2.5;
     ServoImplEx lifter;
@@ -355,7 +355,7 @@ public class RedCloseWGate extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3225);
+                shooter.setTargetRPM(3150);
                 return true;
             }
         };

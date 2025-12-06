@@ -57,7 +57,7 @@ public class BlueClose extends LinearOpMode {
         Pose2d pose7 = new Pose2d(10.5, -33.5, Math.toRadians(-80));
         Pose2d pose8 = new Pose2d(11, -37.5, Math.toRadians(-85));
         Pose2d pose9 = new Pose2d(11.25, -43, Math.toRadians(-90));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-130));
+        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-133));
 
 
 
@@ -371,7 +371,7 @@ public class BlueClose extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3225);
+                shooter.setTargetRPM(3150);
                 return true;
             }
         };

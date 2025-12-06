@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmode.autos;
 
 import androidx.annotation.NonNull;
 
-//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
@@ -22,10 +21,8 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "Blue Close With Gate")
-
-public class BlueCloseWGate extends LinearOpMode {
-    public static double gateWaitTime = 2.5;
+@Autonomous(name = "Move Aside")
+public class MoveAnside extends LinearOpMode {
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -55,15 +52,11 @@ public class BlueCloseWGate extends LinearOpMode {
         Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
         Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
         Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-139));
+        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-142));
         Pose2d pose6 = new Pose2d(10.5, -26, Math.toRadians(-80));
         Pose2d pose7 = new Pose2d(10.5, -33.5, Math.toRadians(-80));
         Pose2d pose8 = new Pose2d(11, -37.5, Math.toRadians(-85));
-        Pose2d pose9 = new Pose2d(11.25, -43, Math.toRadians(-90));
-        Pose2d pose10 = new Pose2d(-2, -59, Math.toRadians(0));
-        Pose2d supportingPose = new Pose2d(-2, - 47, Math.toRadians(0));
-        Pose2d pose11 = new Pose2d(-20, -57, Math.toRadians(0));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-130));
+        Pose2d pose9 = new Pose2d(11.25, -43.5, Math.toRadians(-90));
 
 
 
@@ -135,18 +128,8 @@ public class BlueCloseWGate extends LinearOpMode {
                 .splineToLinearHeading(pose9, Math.toRadians(0))
                 .build();
         Action action12 = drive.actionBuilder(pose9)
-                .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
+                .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
                 .build();
-        Action action13 = drive.actionBuilder(blueShootFirstLinePose)
-                .splineToLinearHeading(supportingPose, Math.toRadians(0))
-                .build();
-        Action action14 = drive.actionBuilder(supportingPose)
-                        .splineToLinearHeading(pose10, Math.toRadians(0))
-                                .build();
-        Action driveOffPath = drive.actionBuilder(pose10)
-                        .splineToLinearHeading(pose11, Math.toRadians(0))
-                                .build();
-
 
 
 
@@ -200,9 +183,9 @@ public class BlueCloseWGate extends LinearOpMode {
                                 driveToFirstLineThirdBall,
                                 stopCollect(),
                                 new SleepAction(0.35),
-                                nextshoot(),
                                 driveToShootFirstLine,
-
+                                nextshoot(),
+                                new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
@@ -220,18 +203,48 @@ public class BlueCloseWGate extends LinearOpMode {
                                 transferDown(),
                                 new SleepAction(0.2),
                                 collect(),
-                                new SleepAction(0.3),
                                 indexerToCollect(),
-                                new SleepAction(1.5),
-                                action13,
-                                new SleepAction(1),
-                                action14,
-                                new SleepAction(gateWaitTime),
-                                driveOffPath,
+                                new SleepAction(0.2),
+                                action8,
+                                action9,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                action10,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                action11,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                action12,
+                                new SleepAction(0.35),
+                                nextshoot(),
 
-
-
-                                indexerToTeleHome(),
+                                new SleepAction(0.2),
+                                transferUp(),
+                                new SleepAction(0.2),
+                                transferDown(),
+                                new SleepAction(0.2),
+                                nextshoot(),
+                                new SleepAction(0.6),
+                                transferUp(),
+                                new SleepAction(0.2),
+                                transferDown(),
+                                new SleepAction(0.2),
+                                nextshoot(),
+                                new SleepAction(0.6),
+                                transferUp(),
+                                new SleepAction(0.2),
+                                transferDown(),
+                                new SleepAction(0.2),
+                                nextshoot(),
+                                new SleepAction(0.6),
+                                transferUp(),
+                                new SleepAction(0.2),
+                                transferDown(),
+                                action7,
 
                                 new SleepAction(3)
 
@@ -257,8 +270,6 @@ public class BlueCloseWGate extends LinearOpMode {
                         updateShooter(),
                         telemetryPacket -> {
                             telemetry.addData("indexer postion", indexer.currentTargetPosition);
-                            telemetry.addData("Shooter Rpm", shooter.getCurrentRPM());
-                            telemetry.addData("Target Rpm", shooter.getTargetRPM());
                             telemetry.update();
                             return true;
                         }
@@ -358,7 +369,7 @@ public class BlueCloseWGate extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3150);
+                shooter.setTargetRPM(3225);
                 return true;
             }
         };

@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 // Note: No @TeleOp annotation here. This is the logic engine only.
 // It is ABSTRACT because it needs RedTeleOp or BlueTeleOp to tell it the offset.
-@Config
+//@Config
 public abstract class BrainSTEMTeleOp extends LinearOpMode {
     public static double shooterThreshold = 100;
 
