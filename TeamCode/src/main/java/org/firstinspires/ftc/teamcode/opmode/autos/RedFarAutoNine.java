@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.opmode.autos;
 
 import androidx.annotation.NonNull;
 
-//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,10 +22,8 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "Red Close Three Gate Three")
-//@Config
-public class RedCloseThreeGateThree extends LinearOpMode {
-    public static double gateWaitTime = 2.5;
+//@Autonomous(name = "Far Nine Auto Red")
+public class RedFarAutoNine extends LinearOpMode {
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -49,18 +47,17 @@ public class RedCloseThreeGateThree extends LinearOpMode {
         //x us 45.5 and y is 64.5 heading is 44
         // 1. Define the Initial Pose
         // Heading of 270 degrees means: +X is Forward, -Y is Right
-        Pose2d initialPose = new Pose2d(-55.5, 44.5, Math.toRadians(135));
-        Pose2d blueDriveToShootingPose = new Pose2d(-24, 24, Math.toRadians(135));
-        Pose2d blueReadyToPickupFirstLinePose = new Pose2d(-9.5, 22.4, Math.toRadians(80));
-        Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, 33.5, Math.toRadians(80));
-        Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, 37.5, Math.toRadians(87.5));
-        Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, 43.5, Math.toRadians(90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, 24, Math.toRadians(142));
-        Pose2d leaveGate = new Pose2d(-20, 57, Math.toRadians(0));
-        Pose2d goToGate = new Pose2d(-2, 47, Math.toRadians(0));
-        Pose2d atGate = new Pose2d(1.2, 61.5, Math.toRadians(0));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, 24, Math.toRadians(130));
-
+        Pose2d initialPose = new Pose2d(61.1, 15.1, Math.toRadians(180));
+        Pose2d pose2 = new Pose2d(55, 14.8, Math.toRadians(146));
+        Pose2d pose3 = new Pose2d(35.503, 36.25, Math.toRadians(90));
+        Pose2d pose4 = new Pose2d(35.502,40, Math.toRadians(90));
+        Pose2d pose5 = new Pose2d(35.501, 44.5, Math.toRadians(90));
+        Pose2d supportingPose = new Pose2d(35.5, 31.5, Math.toRadians(90));
+        Pose2d pose6 = new Pose2d(10.5, 26, Math.toRadians(80));
+        Pose2d pose7 = new Pose2d(10.5, 33.5, Math.toRadians(80));
+        Pose2d pose8 = new Pose2d(11, 37.5, Math.toRadians(85));
+        Pose2d pose9 = new Pose2d(11.25, 43, Math.toRadians(90));
+        Pose2d endingPose = new Pose2d(35, 20, Math.toRadians(180));
 
 
 
@@ -76,56 +73,55 @@ public class RedCloseThreeGateThree extends LinearOpMode {
 
 // x is -12.6 y is -33.3 heading - 139.9
         // --- NOTE: InitialPose2 is not needed and has been removed ---
+        //x is 9.4 y is 34.7 headingis -90
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         // --- PROBLEM: The old traj1, traj2, traj3 definitions are deleted ---
         // We now define ONE chained action instead:
-        Action driveToShootPreload = drive.actionBuilder(initialPose)
+        Action action1 = drive.actionBuilder(initialPose)
                 .setReversed(true)
                 // 1. FIRST MOVEMENT: Go Forward 48 inches
                 // We add 48 inches to the starting X-coordinate (34.8634 + 48)
-                .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
+                .splineToLinearHeading(pose2, Math.toRadians(0))
                 //.splineToLinearHeading(pose4, Math.toRadians(0))
                 .build();
-
-
-        Action driveToPickupFirstLine = drive.actionBuilder(blueDriveToShootingPose)
-                .splineToLinearHeading(blueReadyToPickupFirstLinePose, Math.toRadians(0))
+        Action action2 = drive.actionBuilder(supportingPose)
+                .splineToLinearHeading(pose3, Math.toRadians(0))
                 .build();
-        //Action action2 = drive.actionBuilder(pose3)
-        // .splineToLinearHeading(pose4,Math.toRadians(0))
-
-        //.build();
-        //Action action3 = drive.actionBuilder(pose5)
-
-        //Action action3 = drive.actionBuilder(pose3)
-        // .splineToLinearHeading(pose4, Math.toRadians(0))
-
-        //  .build();
-        Action driveToFirstLineFirstBall = drive.actionBuilder(blueReadyToPickupFirstLinePose)
-                .splineToLinearHeading(bluePickupFirstLineFirstBallPose, Math.toRadians(0))
+        Action action3 = drive.actionBuilder(pose3)
+                .splineToLinearHeading(pose4, Math.toRadians(0))
                 .build();
-        Action driveToFirstLineSecondBall = drive.actionBuilder(bluePickupFirstLineFirstBallPose)
-                .splineToLinearHeading(bluePickupFirstLineSecondBallPose, Math.toRadians(0))
+        Action action4 = drive.actionBuilder(pose4)
+                .splineToLinearHeading(pose5, Math.toRadians(0))
                 .build();
-        Action driveToFirstLineThirdBall = drive.actionBuilder(bluePickupFirstLineSecondBallPose)
-                .splineToLinearHeading(bluePickupFirstLineThirdBallPose, Math.toRadians(0))
+        Action supportingAction = drive.actionBuilder(pose2)
+                .splineToLinearHeading(supportingPose, Math.toRadians(0))
                 .build();
-        Action driveToShootFirstLine = drive.actionBuilder(atGate)
-                .setReversed(true)
-                .splineToLinearHeading(blueShootFirstLinePose, Math.toRadians(0))
+        Action action5 = drive.actionBuilder(pose5)
+                .splineToLinearHeading(initialPose, Math.toRadians(0), new TranslationalVelConstraint((30)))
                 .build();
-
-        Action driveToGate = drive.actionBuilder(bluePickupFirstLineThirdBallPose)
-                .splineToLinearHeading(goToGate, Math.toRadians(0))
+        Action action6 = drive.actionBuilder(initialPose)
+                .splineToLinearHeading(pose2, Math.toRadians(0), new TranslationalVelConstraint(30))
                 .build();
-        Action park = drive.actionBuilder(blueShootFirstLinePose)
-                .splineToLinearHeading(leaveGate, Math.toRadians(0))
+        Action action7 = drive.actionBuilder(pose2)
+                .splineToLinearHeading(endingPose, Math.toRadians(0), new TranslationalVelConstraint(30))
                 .build();
-        Action openGate = drive.actionBuilder(goToGate)
-                .splineToLinearHeading(atGate, Math.toRadians(0))
+        Action action8 = drive.actionBuilder(pose2)
+                .splineToLinearHeading(pose6, Math.toRadians(0))
                 .build();
+        Action action9 = drive.actionBuilder(pose6)
+                .splineToLinearHeading(pose7, Math.toRadians(0))
+                .build();
+        Action action10 = drive.actionBuilder(pose7)
+                .splineToLinearHeading(pose8, Math.toRadians(0))
+                .build();
+        Action action11 = drive.actionBuilder(pose8)
+                .splineToLinearHeading(pose9, Math.toRadians(0))
+                .build();
+        Action action12 = drive.actionBuilder(pose9)
+                .splineToLinearHeading(initialPose, Math.toRadians(0))
+                        .build();
 
 
 
@@ -137,28 +133,30 @@ public class RedCloseThreeGateThree extends LinearOpMode {
 
 
 
+// x is 57.7 y is-16.5 heading is -180
+        //2nd is 61.1 for x -15.1 for y heading is -180
         waitForStart();
 
         Actions.runBlocking(
                 new ParallelAction(
                         new SequentialAction(
+
                                 startShooter(),
-                                driveToShootPreload,
-                                new SleepAction(1),
+                                action1,
                                 nextshoot(),
-                                new SleepAction(0.55),
+                                new SleepAction(0.50),
                                 transferUp(),
                                 new SleepAction(0.25),
                                 transferDown(),
                                 new SleepAction(0.25),
                                 nextshoot(),
-                                new SleepAction(0.55),
+                                new SleepAction(0.50),
                                 transferUp(),
                                 new SleepAction(0.25),
                                 transferDown(),
                                 new SleepAction(0.25),
                                 nextshoot(),
-                                new SleepAction(0.55),
+                                new SleepAction(0.5),
                                 transferUp(),
                                 new SleepAction(0.35),
                                 transferDown(),
@@ -168,55 +166,44 @@ public class RedCloseThreeGateThree extends LinearOpMode {
                                 indexerToCollect(),
                                 new SleepAction(0.25),
                                 collect(),
-
-                                driveToPickupFirstLine,
-                                new SleepAction(0.1),
-                                driveToFirstLineFirstBall,
-                                new SleepAction(0.25),
                                 indexerToCollect(),
-                                new SleepAction(0.25),
-                                driveToFirstLineSecondBall,
-                                new SleepAction(0.25),
+                                supportingAction,
+                                new SleepAction(0.2),
+                                action2,
+                                new SleepAction(0.2),
                                 indexerToCollect(),
-                                new SleepAction(0.25),
-                                driveToFirstLineThirdBall,
-                                stopCollect(),
-                                new SleepAction(0.35),
-
-                                nextshoot(),
-                                driveToGate,
-                                new SleepAction(0.1),
-                                openGate,
-                                new SleepAction(2.5),
-                                driveToShootFirstLine,
-                                new SleepAction(0.3),
-
-
-                                transferUp(),
                                 new SleepAction(0.2),
-                                transferDown(),
+                                action3,
                                 new SleepAction(0.2),
+                                indexerToCollect(),
+                                new SleepAction(0.2),
+                                action4,
+                                new SleepAction(0.5),
+                                indexerToCollect(),
+                                new SleepAction(0.15),
+                                action5,
+                                new SleepAction(0.15),
+                                action6,
+                                new SleepAction(0.5),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
-                                new SleepAction(0.2),
+                                new SleepAction(0.25),
                                 transferDown(),
-                                new SleepAction(0.2),
+                                new SleepAction(0.25),
+                                nextshoot(),
+                                new SleepAction(0.55),
+                                transferUp(),
+                                new SleepAction(0.25),
+                                transferDown(),
+                                new SleepAction(0.25),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
                                 new SleepAction(0.35),
                                 transferDown(),
-                                new SleepAction(0.2),
-                                park,
-
-
-
-
-
-                                indexerToTeleHome(),
-
-                                new SleepAction(3)
+                                new SleepAction(0.25),
+                                indexerToCollect(),
 
 
 
@@ -224,10 +211,25 @@ public class RedCloseThreeGateThree extends LinearOpMode {
 
 
 
+                                action8,
+                                action9,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                action10,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                action11,
+                                new SleepAction(0.35),
+                                indexerToCollect(),
+                                new SleepAction(0.35),
+                                nextshoot(),
 
 
 
 
+                                indexerToTeleHome()
 
 
 
@@ -237,12 +239,7 @@ public class RedCloseThreeGateThree extends LinearOpMode {
 
                         ),
                         indexerUpdate(),
-                        updateShooter(),
-                        telemetryPacket -> {
-                            telemetry.addData("indexer postion", indexer.currentTargetPosition);
-                            telemetry.update();
-                            return true;
-                        }
+                        updateShooter()
                 )
         );
 
@@ -300,7 +297,7 @@ public class RedCloseThreeGateThree extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                indexer.handleRightBumper();
+                indexer.rapidFireRB();
                 return false;
             }
         };
@@ -316,6 +313,7 @@ public class RedCloseThreeGateThree extends LinearOpMode {
             }
         };
     }
+
     private Action transferDown() {
         return new Action() {
             @Override
@@ -339,9 +337,10 @@ public class RedCloseThreeGateThree extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3150);
+                shooter.setTargetRPM(4125);
                 return true;
             }
         };
     }
 }
+

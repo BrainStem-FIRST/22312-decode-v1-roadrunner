@@ -192,7 +192,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             else {
                 // MANUAL CONTROL:
                 // Only fire if Safety Interlocks pass AND Button is pressed
-                if (gamepad2.x && isShooterReady && isIndexerReady) {
+                if ((gamepad2.x && isShooterReady && isIndexerReady) || gamepad2.dpad_left) {
                     transfer.fire();
                 } else {
                     // If not firing manually, keep the transfer retracted

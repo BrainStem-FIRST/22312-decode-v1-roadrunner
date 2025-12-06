@@ -55,10 +55,10 @@ public class BlueCloseThreeGateThree extends LinearOpMode {
         Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
         Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
         Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-142));
+        Pose2d blueShootFirstLinePose = new Pose2d(-21.5, -24, Math.toRadians(-142));
         Pose2d leaveGate = new Pose2d(-20, -57, Math.toRadians(0));
         Pose2d goToGate = new Pose2d(-2, -47, Math.toRadians(0));
-        Pose2d atGate = new Pose2d(-5, -57, Math.toRadians(0));
+        Pose2d atGate = new Pose2d(1.2, -61.5, Math.toRadians(0));
         Pose2d blueDriveToShootingPose3 = new Pose2d(24, 24, Math.toRadians(-130));
 
 
@@ -113,6 +113,7 @@ public class BlueCloseThreeGateThree extends LinearOpMode {
                 .splineToLinearHeading(bluePickupFirstLineThirdBallPose, Math.toRadians(0))
                 .build();
         Action driveToShootFirstLine = drive.actionBuilder(atGate)
+                .setReversed(true)
                 .splineToLinearHeading(blueShootFirstLinePose, Math.toRadians(0))
                 .build();
 
@@ -142,7 +143,9 @@ public class BlueCloseThreeGateThree extends LinearOpMode {
                 new ParallelAction(
                         new SequentialAction(
                                 startShooter(),
+
                                 driveToShootPreload,
+                                new SleepAction(1),
                                 nextshoot(),
                                 new SleepAction(0.55),
                                 transferUp(),
@@ -185,7 +188,7 @@ public class BlueCloseThreeGateThree extends LinearOpMode {
                                 driveToGate,
                                 new SleepAction(0.1),
                                 openGate,
-                                new SleepAction(1),
+                                new SleepAction(2.5),
                                 driveToShootFirstLine,
                                 new SleepAction(0.3),
 
