@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @Config
 public class Indexer {
-    public static double flipperWaitTime = 0;
+    public static double flipperWaitTime = 0.2;
     public ElapsedTime flickTimer;
 
     public DcMotorEx indexerMotor;
@@ -29,9 +29,8 @@ public class Indexer {
     public static double kP = 0.006;
     private Gamepad gamepad;
 
-    public Indexer(HardwareMap hwMap, Gamepad gamepad2) {
+    public Indexer(HardwareMap hwMap) {
         init(hwMap);
-        gamepad = gamepad2;
     }
 
     public void init(HardwareMap hwMap) {
@@ -70,15 +69,7 @@ public class Indexer {
             CtoC_or_StoS_Advance(); // StoS (+2)
         }
     }
-    public void handleRightBumper() {
-        if (flickTimer.seconds() > flickTime) {
-            if (isOddState()) {
-                CtoS_or_StoC_Advance(); // CtoS (+1)
-            } else {
-                CtoC_or_StoS_Advance(); // StoS (+2)
-            }
-        }
-    }
+
 
     /**
      * Logic for the Y Button.

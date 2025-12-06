@@ -100,7 +100,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             // --- 3-BALL RAPID FIRE (Right Bumper) ---
             boolean currentD1RBState = gamepad1.right_bumper;
             if (currentD1RBState && !previousD1RBState) {
-                indexer.handleRapidFire();
+                indexer.rapidFireRB();
                 sleep(350);
                 rapidFire.startSequence();
             }
@@ -144,7 +144,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
 //                transfer.home();
 //            }
 
-            if (currentRBState && !previousRBState) indexer.handleRightBumper();
+            if (currentRBState && !previousRBState) indexer.rapidFireRB();
             if (currentYState && !previousYState)   indexer.handleYButton();
             if (currentLBState && !previousLBState) indexer.handleLeftBumper();
             if (currentBState && !previousBState)   indexer.handleBButton();
