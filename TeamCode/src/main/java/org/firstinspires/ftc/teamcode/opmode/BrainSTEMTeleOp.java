@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 // Note: No @TeleOp annotation here. This is the logic engine only.
@@ -117,6 +118,10 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             if (currentAState && !previousAState) {
                 shooter.toggle();
             }
+            if(gamepad1.dpad_up){
+
+
+            }
             previousAState = currentAState;
 
             // Shooter Speed Selection
@@ -191,6 +196,8 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
                     transfer.home();
                 }
             }
+
+
             
             telemetry.addData("indexer/shooter ready", isIndexerReady + " | " + isShooterReady);
 
@@ -205,6 +212,7 @@ public abstract class BrainSTEMTeleOp extends LinearOpMode {
             telemetry.addData("Auto Fire Status", rapidFire.getStatus());
             telemetry.update();
         }
+
 
         vision.stop();
     }
