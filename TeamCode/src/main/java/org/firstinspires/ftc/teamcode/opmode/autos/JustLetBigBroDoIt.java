@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-@Autonomous(name = "JustLetBigBroDoIt")
+//@Autonomous(name = "JustLetBigBroDoIt")
 public class JustLetBigBroDoIt extends LinearOpMode {
     ServoImplEx lifter;
     Intake intake;

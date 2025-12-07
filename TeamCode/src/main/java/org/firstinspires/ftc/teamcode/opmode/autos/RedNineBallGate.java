@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode.autos;
 
 import androidx.annotation.NonNull;
 
+//import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
@@ -21,8 +22,10 @@ import org.firstinspires.ftc.teamcode.opmode.Shooter;
 import org.firstinspires.ftc.teamcode.opmode.Transfer;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 
-//@Autonomous(name = "Testing Site")
-public class TestingSite extends LinearOpMode {
+@Autonomous(name = "Red Nine Ball Gate")
+//@Config
+public class RedNineBallGate extends LinearOpMode {
+    public static double gateWaitTime = 2.5;
     ServoImplEx lifter;
     Intake intake;
     Drive drive;
@@ -46,18 +49,21 @@ public class TestingSite extends LinearOpMode {
         //x us 45.5 and y is 64.5 heading is 44
         // 1. Define the Initial Pose
         // Heading of 270 degrees means: +X is Forward, -Y is Right
-        Pose2d initialPose = new Pose2d(-55.5, -44.5, Math.toRadians(-135));
-        Pose2d blueDriveToShootingPose = new Pose2d(-24, -24, Math.toRadians(-135));
-        Pose2d blueReadyToPickupFirstLinePose = new Pose2d(-9.5, -22.4, Math.toRadians(-80));
-        Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, -33.5, Math.toRadians(-80));
-        Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, -37.5, Math.toRadians(-87.5));
-        Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, -43.5, Math.toRadians(-90));
-        Pose2d blueShootFirstLinePose = new Pose2d(-24.1, -24, Math.toRadians(-139));
-        Pose2d pose6 = new Pose2d(10.5, -26, Math.toRadians(-80));
-        Pose2d pose7 = new Pose2d(10.5, -33.5, Math.toRadians(-80));
-        Pose2d pose8 = new Pose2d(11, -37.5, Math.toRadians(-85));
-        Pose2d pose9 = new Pose2d(11.25, -43, Math.toRadians(-90));
-        Pose2d blueDriveToShootingPose3 = new Pose2d(-24, -24, Math.toRadians(-130));
+        Pose2d initialPose = new Pose2d(-55.5, 44.5, Math.toRadians(135));
+        Pose2d blueDriveToShootingPose = new Pose2d(-24, 24, Math.toRadians(135));
+        Pose2d blueReadyToPickupFirstLinePose = new Pose2d(-9.5, 22.4, Math.toRadians(80));
+        Pose2d bluePickupFirstLineFirstBallPose = new Pose2d(-9.5, 33.5, Math.toRadians(80));
+        Pose2d bluePickupFirstLineSecondBallPose = new Pose2d(-9.5, 37.5, Math.toRadians(87.5));
+        Pose2d bluePickupFirstLineThirdBallPose = new Pose2d(-9.5, 43.5, Math.toRadians(90));
+        Pose2d blueShootFirstLinePose = new Pose2d(-24, 24, Math.toRadians(135));
+        Pose2d leaveGate = new Pose2d(-20, 57, Math.toRadians(0));
+        Pose2d goToGate = new Pose2d(-2, 47, Math.toRadians(0));
+        Pose2d atGate = new Pose2d(1.2, 59.5, Math.toRadians(0));
+        Pose2d ReadyToPickUpSecondLinePose = new Pose2d(10.5, 26, Math.toRadians(80));
+        Pose2d PickUpFirstBallSecondLine = new Pose2d(10.5, 33.5, Math.toRadians(80));
+        Pose2d PickUpSecondBallSecondLine = new Pose2d(11, 37.5, Math.toRadians(85));
+        Pose2d PickUpThirdBallSecondLine = new Pose2d(11.25, 45, Math.toRadians(90));
+        Pose2d offLineShot = new Pose2d(-33.5, 13.3, Math.toRadians(130));
 
 
 
@@ -110,27 +116,43 @@ public class TestingSite extends LinearOpMode {
         Action driveToFirstLineThirdBall = drive.actionBuilder(bluePickupFirstLineSecondBallPose)
                 .splineToLinearHeading(bluePickupFirstLineThirdBallPose, Math.toRadians(0))
                 .build();
-        Action driveToShootFirstLine = drive.actionBuilder(bluePickupFirstLineThirdBallPose)
-                .splineToLinearHeading(blueShootFirstLinePose, Math.toRadians(0))
+
+        Action driveToShootFirstLine = drive.actionBuilder(atGate)
+                .setReversed(true)
+                .strafeToLinearHeading(blueDriveToShootingPose.position, Math.toRadians(140))
                 .build();
-        Action action7 = drive.actionBuilder(blueDriveToShootingPose)
-                .splineToLinearHeading(bluePickupFirstLineFirstBallPose,Math.toRadians(0))
+
+        Action driveToGate = drive.actionBuilder(bluePickupFirstLineThirdBallPose)
+                .splineToLinearHeading(goToGate, Math.toRadians(0))
                 .build();
-        Action action8 = drive.actionBuilder(blueDriveToShootingPose)
-                .splineToLinearHeading(pose6, Math.toRadians(0))
+        Action park = drive.actionBuilder(blueDriveToShootingPose)
+                .splineToLinearHeading(leaveGate, Math.toRadians(0))
                 .build();
-        Action action9 = drive.actionBuilder(pose6)
-                .splineToLinearHeading(pose7, Math.toRadians(0))
+        Action openGate = drive.actionBuilder(goToGate)
+                .splineToLinearHeading(atGate, Math.toRadians(0))
                 .build();
-        Action action10 = drive.actionBuilder(pose7)
-                .splineToLinearHeading(pose8, Math.toRadians(0))
+        Action driveToSecondLine = drive.actionBuilder(blueDriveToShootingPose)
+                .splineToLinearHeading(ReadyToPickUpSecondLinePose, Math.toRadians(0))
                 .build();
-        Action action11 = drive.actionBuilder(pose8)
-                .splineToLinearHeading(pose9, Math.toRadians(0))
+        Action collectSecondLineFirstBall = drive.actionBuilder(ReadyToPickUpSecondLinePose)
+                .splineToLinearHeading(PickUpFirstBallSecondLine, Math.toRadians(0))
                 .build();
-        Action action12 = drive.actionBuilder(pose9)
-                .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
+        Action collectSecondLineSecondBall = drive.actionBuilder(PickUpFirstBallSecondLine)
+                .splineToLinearHeading(PickUpSecondBallSecondLine, Math.toRadians(0))
                 .build();
+        Action collectSecondLineThirdBall = drive.actionBuilder(PickUpSecondBallSecondLine)
+                .splineToLinearHeading(PickUpThirdBallSecondLine, Math.toRadians(0))
+                .build();
+        Action shoot = drive.actionBuilder(PickUpThirdBallSecondLine)
+                .splineToLinearHeading(blueDriveToShootingPose, Math.toRadians(0))
+                .build();
+        Action shootOffLine = drive.actionBuilder(PickUpThirdBallSecondLine)
+                .strafeToLinearHeading(offLineShot.position, offLineShot.heading)
+                .build();
+
+
+
+
 
 
 
@@ -147,6 +169,7 @@ public class TestingSite extends LinearOpMode {
                 new ParallelAction(
                         new SequentialAction(
                                 startShooter(),
+
                                 driveToShootPreload,
                                 nextshoot(),
                                 new SleepAction(0.55),
@@ -175,19 +198,25 @@ public class TestingSite extends LinearOpMode {
                                 driveToPickupFirstLine,
                                 new SleepAction(0.1),
                                 driveToFirstLineFirstBall,
-                                new SleepAction(0.25),
+                                new SleepAction(0.1),
                                 indexerToCollect(),
-                                new SleepAction(0.25),
+                                new SleepAction(0.1),
                                 driveToFirstLineSecondBall,
-                                new SleepAction(0.25),
+                                new SleepAction(0.1),
                                 indexerToCollect(),
+                                new SleepAction(0.1),
                                 driveToFirstLineThirdBall,
                                 stopCollect(),
                                 new SleepAction(0.35),
-                                nextshoot(),
-                                reverseCollect(),
 
+                                nextshoot(),
+                                driveToGate,
+                                new SleepAction(0.1),
+                                openGate,
+                                new SleepAction(1.25),
                                 driveToShootFirstLine,
+                                new SleepAction(0.15),
+
 
                                 transferUp(),
                                 new SleepAction(0.2),
@@ -205,28 +234,26 @@ public class TestingSite extends LinearOpMode {
                                 new SleepAction(0.35),
                                 transferDown(),
                                 new SleepAction(0.2),
+
+
                                 collect(),
+                                driveToSecondLine,
+                                new SleepAction(0.1),
+                                indexerToCollect(),
+                                new SleepAction(0.1),
+                                collectSecondLineFirstBall,
+                                new SleepAction(0.1),
                                 indexerToCollect(),
                                 new SleepAction(0.2),
-                                action8,
-                                action9,
-
-                                new SleepAction(0.35),
+                                collectSecondLineSecondBall,
+                                new SleepAction(0.1),
                                 indexerToCollect(),
-                                new SleepAction(0.35),
-                                action10,
-                                new SleepAction(0.35),
+                                new SleepAction(0.1),
+                                collectSecondLineThirdBall,
+                                new SleepAction(0.1),
                                 indexerToCollect(),
-                                new SleepAction(0.35),
-                                action11,
-                                new SleepAction(0.35),
-                                indexerToCollect(),
-                                new SleepAction(0.35),
-                                reverseCollect(),
-
-                                action12,
-                                new SleepAction(0.35),
                                 nextshoot(),
+                                shootOffLine,
 
                                 new SleepAction(0.2),
                                 transferUp(),
@@ -234,24 +261,22 @@ public class TestingSite extends LinearOpMode {
                                 transferDown(),
                                 new SleepAction(0.2),
                                 nextshoot(),
-                                new SleepAction(0.6),
+                                new SleepAction(0.5),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
                                 new SleepAction(0.2),
                                 nextshoot(),
-                                new SleepAction(0.6),
+                                new SleepAction(0.5),
                                 transferUp(),
                                 new SleepAction(0.2),
                                 transferDown(),
                                 new SleepAction(0.2),
-                                nextshoot(),
-                                new SleepAction(0.6),
-                                transferUp(),
-                                new SleepAction(0.2),
-                                transferDown(),
-                                action7,
+
+
                                 indexerToTeleHome(),
+
+
 
                                 new SleepAction(3)
 
@@ -287,15 +312,6 @@ public class TestingSite extends LinearOpMode {
 
 
 
-    }
-    private Action reverseCollect(){
-        return new Action() {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                intake.runOuttake();
-                return false;
-            }
-        };
     }
     private Action stopCollect() {
         return new Action() {
@@ -385,9 +401,10 @@ public class TestingSite extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(3225);
+                shooter.setTargetRPM(3150);
                 return true;
             }
         };
     }
 }
+
