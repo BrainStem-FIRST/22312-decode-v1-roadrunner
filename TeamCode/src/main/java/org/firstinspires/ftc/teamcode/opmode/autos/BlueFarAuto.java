@@ -313,7 +313,7 @@ public class BlueFarAuto extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(4125);
+                shooter.setTargetRPM(4075);
                 return true;
             }
         };

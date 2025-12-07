@@ -49,10 +49,10 @@ public class RedFarAuto extends LinearOpMode {
         // Heading of 270 degrees means: +X is Forward, -Y is Right
         Pose2d initialPose = new Pose2d(61.1, 15.1, Math.toRadians(180));
         Pose2d pose2 = new Pose2d(55, 14.8, Math.toRadians(146));
-        Pose2d pose3 = new Pose2d(35.503, 36.25, Math.toRadians(90));
-        Pose2d pose4 = new Pose2d(35.502,40, Math.toRadians(90));
-        Pose2d pose5 = new Pose2d(35.501, 44.5, Math.toRadians(90));
-        Pose2d supportingPose = new Pose2d(35.5, 31.5, Math.toRadians(90));
+        Pose2d pose3 = new Pose2d(36.103, 36.25, Math.toRadians(90));
+        Pose2d pose4 = new Pose2d(36.102,40, Math.toRadians(90));
+        Pose2d pose5 = new Pose2d(36.101, 44.5, Math.toRadians(90));
+        Pose2d supportingPose = new Pose2d(36.1, 31.5, Math.toRadians(90));
         Pose2d endingPose = new Pose2d(35, 20, Math.toRadians(180));
 
 
@@ -312,7 +312,7 @@ public class RedFarAuto extends LinearOpMode {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                shooter.setTargetRPM(4125);
+                shooter.setTargetRPM(4075);
                 return true;
             }
         };

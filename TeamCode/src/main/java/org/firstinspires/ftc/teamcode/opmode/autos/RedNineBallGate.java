@@ -119,7 +119,7 @@ public class RedNineBallGate extends LinearOpMode {
 
         Action driveToShootFirstLine = drive.actionBuilder(atGate)
                 .setReversed(true)
-                .strafeToLinearHeading(blueDriveToShootingPose.position, Math.toRadians(140))
+                .strafeToLinearHeading(blueDriveToShootingPose.position, Math.toRadians(132.5))
                 .build();
 
         Action driveToGate = drive.actionBuilder(bluePickupFirstLineThirdBallPose)

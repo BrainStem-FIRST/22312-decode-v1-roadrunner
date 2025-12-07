@@ -129,6 +129,7 @@ public class BlueClose extends LinearOpMode {
                 .splineToLinearHeading(pose9, Math.toRadians(0))
                 .build();
         Action action12 = drive.actionBuilder(pose9)
+                .setReversed(true)
                 .splineToLinearHeading(blueDriveToShootingPose3, Math.toRadians(0))
                 .build();
 
